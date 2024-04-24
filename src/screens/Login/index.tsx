@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Image, KeyboardAvoidingView, Platform  } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import UserService from '../../services/userService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Password from 'antd/es/input/Password';
+
 
 const Login = () => {
   const navigation = useNavigation<StackTypes>();
@@ -11,7 +14,7 @@ const Login = () => {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [usernameError, setUsernameError] = useState(false);
-
+  const [data, setData] = useState('');
   const userService = new UserService();
 
   const [fontsLoaded] = useFonts({
@@ -23,36 +26,33 @@ const Login = () => {
     return null;
   }
 
+
   const handleLogin = async () => {
+    const autenticado = await userService.validateUser(login, password);
 
-    if (!login) {
+    if (autenticado) {
+      await AsyncStorage.setItem('userData', JSON.stringify({ id: autenticado.id, email: login, name: autenticado.name, password: autenticado.password }));
+      navigation.navigate('Inicial');
+    } else {
       setUsernameError(true);
-      return;
-    } else {
-      setUsernameError(false);
-    }
-
-    const isValid = await userService.validateUser(login, password);
-    alert(isValid);
-    if (isValid) {
-      alert('Usuário autenticado com sucesso');
-      //Alert.alert('Sucesso', 'Usuário autenticado com sucesso');
-      setLogin('');
-      setPassword('');
-    } else {
-      alert('Usuário e/ou senha inválidos');
-      //Alert.alert('Erro', 'Usuário e/ou senha inválidos');
+      console.log('Falha na autenticação. Verifique suas credenciais.');
     }
   };
 
   return (
-
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100} // Ajuste conforme necessário
+  >
     <View style={styles.container}>
+
+      <Image source={require('../../../assets/images/LogoAmarela.png')} style={styles.imageLogo} />
       <Text style={styles.title}>Entrar</Text>
 
       {/* <Text style={styles.labelText}>E-mail</Text> */}
       <TextInput
-        style={[styles.input, usernameError && styles.errorInput]} // Aplicar estilo de erro se usernameError for true
+        style={[styles.input, usernameError && styles.errorInput]}
         placeholder='E-mail'
         onChangeText={setLogin}
         value={login}
@@ -60,16 +60,27 @@ const Login = () => {
 
       {/* <Text style={styles.labelText}>Senha</Text> */}
       <TextInput
-        style={styles.input}
+        style={[styles.input, usernameError && styles.errorInput]}
         placeholder='Senha'
         secureTextEntry={true}
         onChangeText={setPassword}
         value={password}
       />
+
+      
+
+      {usernameError && (
+        <View style={styles.containerMensagemErro}>
+          <Text style={styles.errorText}>Credenciais incorretas!</Text>
+          <Text style={styles.errorText}>Por favor, verifique seu e-mail e senha.</Text>
+        </View>
+      )}
+
       <TouchableOpacity
         style={styles.button}
-        // onPress={handleLogin}
-        onPress={() => { navigation.navigate("Inicial"); }}>
+        onPress={handleLogin}
+      // onPress={() => { navigation.navigate("Inicial"); }}
+      >
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
 
@@ -85,6 +96,8 @@ const Login = () => {
 
       {/* <Button title='Ir para Home'/> */}
     </View>
+    </KeyboardAvoidingView>
+
   );
 
 };
@@ -94,23 +107,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#98A62D',
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
     fontFamily: 'Poppins_700Bold',
-    color: '#49708a',  },
+    color: '#ffffff',
+  },
+
   input: {
     width: '80%',
     height: 40,
-    borderColor: '#49708a',
-    borderWidth: 0,
+    borderColor: '#ffffff',
+    borderWidth: 1,
     borderRadius: 8,
     marginBottom: 20,
     paddingHorizontal: 10,
-    backgroundColor:'#f0f0f0',
+    backgroundColor: '#f0f0f0',
   },
+
   button: {
     width: '80%',
     height: 40,
@@ -118,8 +134,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#a1e000',
-    backgroundColor: '#a1e000',
+    borderColor: '#F29422',
+    backgroundColor: '#F29422',
     marginBottom: 15,
   },
 
@@ -139,8 +155,30 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_400Regular',
     color: '#446880',
   },
+
   errorInput: {
-    borderColor: 'red', // Alterar a cor da borda para vermelho se houver erro
+    borderColor: 'red',
+  },
+
+  imageLogo: {
+    width: 200,
+    height: 210,
+    marginBottom: 50
+  },
+
+  containerMensagemErro:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
+  errorText: {
+    fontFamily: 'Poppins_400Regular',
+    color: '#8C160B',
+    marginBottom: 4,
+    fontSize: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

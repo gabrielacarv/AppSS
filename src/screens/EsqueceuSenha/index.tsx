@@ -42,14 +42,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#98A62D',
   },
 
   title: {
     fontSize: 24,
     marginBottom: 20,
     fontFamily: 'Poppins_700Bold',
-    color: '#49708a',
+    color: '#ffffff',
   },
 
   input: {
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#a1e000',
-    backgroundColor: '#a1e000',
+    borderColor: '#f2a622',
+    backgroundColor: '#f2a622',
     marginBottom: 15,
   },
 

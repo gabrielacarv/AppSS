@@ -68,48 +68,52 @@ const Cadastro = () => {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.title}>Cadastre-se</Text>
+      <Text style={styles.title}>Criar conta</Text>
 
-      {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '80%',height: 100, borderRadius: 50}}> */}
+      <View style={styles.containerFormulario}>
 
-      {image && <Image source={{ uri: image }} style={styles.imgPerfil} />}
-
-      <TouchableOpacity style={styles.buttonImg} onPress={pickImage} >
-        <Text style={styles.buttonText}>Inserir Imagem</Text>
-      </TouchableOpacity>
+        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '80%',height: 100, borderRadius: 50}}> */}
+        {/* {image && <Image source={{ uri: image }} style={styles.imgPerfil} />} */}
+        <Image source={image ? { uri: image } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.imgPerfil} />
 
 
-      {/* <Text style={styles.labelText}>Nome</Text> */}
-      <TextInput
-        style={styles.input}
-        placeholder='Nome Completo'
-        onChangeText={text => setName(text)}
-        value={name}
-      />
+        <TouchableOpacity style={styles.buttonImg} onPress={pickImage} >
+          <Text style={styles.buttonText}>Inserir Imagem</Text>
+        </TouchableOpacity>
 
-      {/* <Text style={styles.labelText}>E-mail</Text> */}
-      <TextInput
-        style={styles.input}
-        placeholder='E-mail'
-        onChangeText={text => setEmail(text)}
-        value={email}
-      />
 
-      {/* <Text style={styles.labelText}>Senha</Text> */}
-      <TextInput
-        style={styles.input}
-        placeholder='Senha'
-        secureTextEntry={true}
-        onChangeText={text => setPassword(text)}
-        value={password}
-      />
+        {/* <Text style={styles.labelText}>Nome</Text> */}
+        <TextInput
+          style={styles.input}
+          placeholder='Nome Completo'
+          onChangeText={text => setName(text)}
+          value={name}
+        />
 
-      {/* <Text style={styles.labelText}>Confirmar Senha</Text> */}
-      <TextInput
-        style={styles.input}
-        placeholder='Confirmar senha'
-        secureTextEntry={true}
-      />
+        {/* <Text style={styles.labelText}>E-mail</Text> */}
+        <TextInput
+          style={styles.input}
+          placeholder='E-mail'
+          onChangeText={text => setEmail(text)}
+          value={email}
+        />
+
+        {/* <Text style={styles.labelText}>Senha</Text> */}
+        <TextInput
+          style={styles.input}
+          placeholder='Senha'
+          secureTextEntry={true}
+          onChangeText={text => setPassword(text)}
+          value={password}
+        />
+
+        {/* <Text style={styles.labelText}>Confirmar Senha</Text> */}
+        <TextInput
+          style={styles.input}
+          placeholder='Confirmar senha'
+          secureTextEntry={true}
+        />
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleUpload}>
         <Text style={styles.buttonText}>Cadastrar</Text>
@@ -126,18 +130,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#f2a622',
+  },
+
+  containerFormulario: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    width: '80%',
+    padding: 20,
+    margin: 15,
   },
 
   title: {
     fontSize: 30,
     marginBottom: 20,
     fontFamily: 'Poppins_700Bold',
-    color: '#49708a',
+    color: '#ffffff',
   },
 
   input: {
-    width: '80%',
+    width: '95%',
     height: 40,
     borderColor: '#49708a',
     borderWidth: 0,
@@ -154,15 +168,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#a1e000',
-    backgroundColor: '#a1e000',
+    borderColor: '#98A62D',
+    backgroundColor: '#98A62D',
     marginBottom: 15,
   },
 
   buttonImg: {
-    width: '50%',
-    height: 40,
-    backgroundColor: '#a1e000',
+    width: '40%',
+    height: 30,
+    backgroundColor: '#8c320b',
     borderRadius: 500,
     justifyContent: 'center',
     alignItems: 'center',
@@ -171,7 +185,7 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: '#ebf7f8',
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: 'Poppins_700Bold'
   },
 

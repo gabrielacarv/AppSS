@@ -4,70 +4,11 @@ import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { Group } from '../../types/groupType'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '../../types/types';
 
 
- const BASE_URL = 'https://localhost:7186/api/Group/GetGroups'
-
-
-// const Inicial = () => {
-
-//   const navigation = useNavigation<StackTypes>();
-
-//   const [fontsLoaded] = useFonts({
-//     Poppins_400Regular,
-//     Poppins_700Bold,
-//   });
-
-//   if (!fontsLoaded) {
-//     return null;
-//   }
-
-//   const [grupos, setGrupos] = useState<Group[]>([]);
-
-//   useEffect(() => {
-//     // Aqui você irá buscar os grupos do seu banco de dados ou API e atualizar o estado 'grupos'
-//     const fetchGrupos = async () => {
-//       // Exemplo de como buscar grupos de uma API fictícia
-//       try {
-//         const response = await fetch(BASE_URL);
-//         const data = await response.json();
-//         setGrupos(data); 
-//       } catch (error) {
-//         console.error('Erro ao buscar grupos:', error);
-//       }
-//     };
-
-//     fetchGrupos();
-//   }, []); 
-
-//   return (
-//     // <View style={styles.container}>
-//     //   <Text style={styles.title}>INCIAL</Text>
-
-//     //   <TouchableOpacity style={styles.containerGrupo}>
-//     //     <Image source={require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
-//     //     <Text style={styles.Text}>Nome Grupo</Text>
-//     //     <Text style={styles.Text}>Quant. (0/10)</Text>
-//     //   </TouchableOpacity>
-//     // </View>
-
-//     <View style={styles.container}>
-//       <Text style={styles.title}>INICIAL</Text>
-
-//       {grupos.map((grupo) => (
-//         <TouchableOpacity key={grupo.id} style={styles.containerGrupo}>
-//           <Image source={{ uri: grupo.Icon }} style={styles.icon} />
-//           <Text style={styles.Text}>{grupo.name}</Text>
-//           <Text style={styles.Text}>{`Quant. (/${grupo.MaxPeople})`}</Text>
-//         </TouchableOpacity>
-//       ))}
-//     </View>
-//   );
-// };
-
-
-
-
+ const BASE_URL = 'https://localhost:7186/api/Group/GetGroupsByUser/'
 
 const Inicial = () => {
   const navigation = useNavigation<StackTypes>();
@@ -90,16 +31,28 @@ const Inicial = () => {
 
   //   loadFonts();
   // }, []);
+  const [userData, setUserData] = useState<User | null>(null); // fornecer um tipo explícito para userData
 
   useEffect(() => {
     const fetchGrupos = async () => {
       try {
-        const response = await fetch(BASE_URL);
-        if (!response.ok) {
-          throw new Error('Erro ao buscar grupos');
+        const userDataString = await AsyncStorage.getItem('userData');
+
+        if (userDataString !== null) {
+          const parsedUserData = JSON.parse(userDataString);
+          setUserData(parsedUserData);
+
+          if (parsedUserData.id) { // Verifica se id está definido
+            const response = await fetch(BASE_URL + parsedUserData.id);
+
+            if (!response.ok) {
+              throw new Error('Erro ao buscar grupos');
+            }
+
+            const data = await response.json();
+            setGrupos(data);
+          }
         }
-        const data = await response.json();
-        setGrupos(data);
       } catch (error) {
         console.error('Erro ao buscar grupos:', error);
         // Trate o erro de forma apropriada (ex: exibindo uma mensagem de erro para o usuário)
@@ -109,46 +62,73 @@ const Inicial = () => {
     fetchGrupos();
   }, []);
 
+
   // if (!fontsLoaded) {
   //   return null;
   // }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>INICIAL</Text>
+    
+<View style={styles.containerGeral}>
+      <View style={styles.containerBtnPefilUsuario}>
+        <TouchableOpacity style={styles.btnPerfilUsuario} onPress={() => { navigation.navigate("Perfil"); }}>
+          <Text style={styles.btnCriarGrupoText}>Perfil</Text>
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.btnCriarGrupo} onPress={() => { navigation.navigate("CriarGrupo"); }}>
-        <Text>Criar grupo</Text>
-      </TouchableOpacity>
-      <ScrollView style={styles.container1}>
+<SafeAreaView style={styles.container}>
+
+      <Text style={styles.title}>Grupos</Text>
+
+      <View style={styles.containerBtnCriarGrupo}>
+        <TouchableOpacity style={styles.btnCriarGrupo} onPress={() => { navigation.navigate("CriarGrupo"); }}>
+          <Text style={styles.btnCriarGrupoText}>+ Grupo</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={styles.container1} contentContainerStyle={{justifyContent: 'center', paddingRight: 0, alignItems: 'center'}} showsVerticalScrollIndicator={false}>
       {grupos.map((grupo) => (
-        <TouchableOpacity key={grupo.idGroup} style={styles.containerGrupo}>
-          <Image source={grupo.icon ? { uri: `data:image/jpeg;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
-          <Text style={styles.Text}>{grupo.name}</Text>
-          <Text style={styles.Text}>{grupo.idGroup}</Text>
-          <Text style={styles.Text}>{`Quant. ${grupo.maxPeople}`}</Text>
+        <TouchableOpacity key={grupo.idGroup} style={styles.containerGrupo} onPress={() => { navigation.navigate("DetalhesGrupo", { grupoId: grupo.idGroup }); }}>
+          <View style={styles.infoPrincipalGrupo} >
+            <Image source={grupo.icon ? { uri: `data:image;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
+            <Text style={styles.Text}>{grupo.name}</Text>
+          </View>
+          <Text style={styles.Text}>{`0/${grupo.maxPeople}`}</Text>      
         </TouchableOpacity>
         
       ))}
       </ScrollView>
+      
     </SafeAreaView>
+    </View>
   );
 };
 
 
 const styles = StyleSheet.create({
+  containerGeral:{
+    flex: 1,
+    backgroundColor: 'white',
+  },
+
   container: {
     flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+
+  container1: {
+    // flex: 1,
+    width: '90%',
+    maxHeight: '70%',
     // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: 'white',
   },
 
-  container1: {
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    backgroundColor: 'white',
+  infoPrincipalGrupo: {
+      flexDirection: 'row',
+      gap: 25,
+      alignItems: 'center',
   },
 
   title: {
@@ -158,27 +138,39 @@ const styles = StyleSheet.create({
     color: '#49708a',
   },
 
-  input: {
-    width: '80%',
-    height: 40,
-    borderColor: '#49708a',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 20,
-    paddingHorizontal: 10,
+  containerBtnCriarGrupo:{
+    justifyContent: 'flex-end',
   },
 
-  button: {
-    width: '80%',
-    height: 40,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#a1e000',
-    backgroundColor: '#a1e000',
-    marginBottom: 15,
+  containerBtnPefilUsuario:{
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    backgroundColor: 'white',
+    marginRight: 10,
+    padding: 5
   },
+
+  // input: {
+  //   width: '80%',
+  //   height: 40,
+  //   borderColor: '#49708a',
+  //   borderWidth: 1,
+  //   borderRadius: 8,
+  //   marginBottom: 20,
+  //   paddingHorizontal: 10,
+  // },
+
+  // button: {
+  //   width: '80%',
+  //   height: 40,
+  //   borderRadius: 8,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   borderWidth: 1,
+  //   borderColor: '#a1e000',
+  //   backgroundColor: '#a1e000',
+  //   marginBottom: 15,
+  // },
 
   buttonText: {
     color: '#ebf7f8',
@@ -200,17 +192,18 @@ const styles = StyleSheet.create({
   containerGrupo: {
     width: '80%',
     height: 70,
-    padding: 0,
-    justifyContent: 'space-around',
+    paddingRight: 30,
+    paddingLeft: 30,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#F29422',
     borderRadius: 10,
     flexDirection: 'row',
-    margin: 10,
+    marginBottom: 10,
   },
 
   Text: {
-    color: 'black',
+    color: '#ffffff',
     fontFamily: 'Poppins_400Regular',
   },
 
@@ -227,19 +220,39 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     borderWidth: 0,
     borderColor: '#a1e000',
-    borderRadius: 0,
+    borderRadius: 5,
     // padding: 10,
   },
 
   btnCriarGrupo:{
-    width: 60,
-    height: 40,
+    width: 300,
+    height: 35,
     padding: 0,
     alignItems: 'center',
-    backgroundColor: '#ebf7f8',
+    backgroundColor: '#98A62D',
     borderRadius: 10,
     flexDirection: 'row',
-    margin: 10,
+    marginBottom: 15,
+    justifyContent: 'center',
+  },
+
+  btnCriarGrupoText:{
+    color: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: 'Poppins_700Bold'
+  },
+
+  btnPerfilUsuario:{
+    width: 30,
+    height: 35,
+    padding: 20,
+    alignItems: 'center',
+    backgroundColor: '#98A62D',
+    borderRadius: 10,
+    flexDirection: 'row',
+    marginBottom: 15,
+    justifyContent: 'center',
   },
   
 });

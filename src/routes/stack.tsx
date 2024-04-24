@@ -8,6 +8,10 @@ import Cadastro from '../screens/Cadastro';
 import EsqueceuSenha from '../screens/EsqueceuSenha';
 import Inicial from '../screens/Inicial';
 import CriarGrupo from '../screens/CriarGrupo';
+import DetalhesGrupo from '../screens/DetalhesGrupo';
+import Perfil from '../screens/Perfil';
+import EditarGrupo from '../screens/EditarGrupo'
+
 
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +24,9 @@ type StackNavigation = {
   EsqueceuSenha: undefined;
   Inicial: undefined;
   CriarGrupo: undefined;
+  DetalhesGrupo: { grupoId : number | undefined};
+  Perfil: undefined;
+  EditarGrupo: { grupoId : number | undefined};
 };
 
 // type TabNavigation = {
@@ -38,7 +45,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#f2601d',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
@@ -50,7 +57,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#98A62D',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
@@ -63,7 +70,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#f2a622',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
@@ -76,7 +83,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#98A62D',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
@@ -94,11 +101,24 @@ const StackComponent = () => (
             shadowOpacity: 0,
             borderBottomWidth: 0,
           },
-        })} // Oculta o cabeçalho da tela Inicial
+        })}
       />
       <Stack.Screen
         name="CriarGrupo"
-        component={CriarGrupo} // Componente do TabNavigator
+        component={CriarGrupo}
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: '#f2601d',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="DetalhesGrupo"
+        component={DetalhesGrupo} 
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -107,7 +127,33 @@ const StackComponent = () => (
             shadowOpacity: 0,
             borderBottomWidth: 0,
           },
-        })} // Oculta o cabeçalho da tela Inicial
+        })}
+      />
+      <Stack.Screen
+        name="Perfil"
+        component={Perfil} 
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: 'white',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="EditarGrupo"
+        component={EditarGrupo} 
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: 'white',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })}
       />
     </Stack.Navigator>
   </NavigationContainer>

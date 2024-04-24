@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, Button, TouchableOpacity, Image, Pressable } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
@@ -18,13 +18,26 @@ const Home = () => {
     return null;
     }
 
-return (
+  return (
     <View style={styles.container}>
-        
-        <Image source={require('../../../assets/images/Logo2.png')} style={styles.image} />
-        {/* <Text style={styles.title}>Sorteio Secreto</Text> */}
 
-        <TouchableOpacity
+      <Image source={require('../../../assets/images/LogoAmarela.png')} style={styles.imageLogo} />
+      {/* <Text style={styles.title}>Sorte Cacau</Text> */}
+
+      <View style={styles.containerSubTitle}>
+        <Text style={styles.subTitle}>Junte-se a nós, crie grupos, reúna a galera e divirta-se!</Text>
+        <Image source={require('../../../assets/images/Mascote1.png')} style={styles.imageMascote} />
+      </View>
+      
+
+
+      <Pressable
+        style={styles.button}
+        onPress={() => { navigation.navigate('Login'); }}>
+        <Text style={styles.buttonText}>Participar</Text>
+      </Pressable>
+
+      {/* <TouchableOpacity
             style={styles.button}  
             onPress={() => {navigation.navigate('Login');}}>
         <Text style={styles.buttonText}>Entrar</Text>       
@@ -34,9 +47,9 @@ return (
             style={styles.button}  
             onPress={() => {navigation.navigate('Cadastro');}}>
         <Text style={styles.buttonText}>Cadastrar-se</Text>       
-        </TouchableOpacity>
+        </TouchableOpacity> */}
     </View>
-);
+  );
 };
 
 const styles = StyleSheet.create({
@@ -44,7 +57,7 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'white',
+      backgroundColor: '#f2601d',
     },
 
     greeting: {
@@ -62,7 +75,23 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 50,
         fontFamily: 'Poppins_700Bold',
-        color: '#446880',
+        color: '#ffffff',
+      },
+
+      subTitle: {
+        fontSize: 17,
+        marginBottom: 0,
+        fontFamily: 'Poppins_700Bold',
+        color: '#ffffff',
+      },
+
+      containerSubTitle:{
+        flexDirection: 'row',
+        padding: 25,
+        alignItems: 'center',
+        gap: 40,
+        marginRight: 80,
+        marginLeft: 80,
       },
 
       button: {
@@ -72,8 +101,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#a1e000',
-        backgroundColor: '#96D311',
+        borderColor: '#98A62D',
+        backgroundColor: '#98A62D',
         marginBottom: 15,
       },
 
@@ -83,11 +112,16 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins_700Bold'
       },
 
-      image:{
-        width: 298, 
-        height: 151.5,
-        marginBottom: 90 
-      }
+      imageLogo:{
+        width: 200, 
+        height: 210,
+        marginBottom: 50 
+      },
+
+      imageMascote:{
+        width: 100, 
+        height: 150,
+      },
     
   });
 

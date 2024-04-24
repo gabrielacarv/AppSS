@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { User } from '../types/types';
+import { UserImage } from '../types/userImage';
 
 // const BASE_URL = 'http://localhost:3000/User/';
 // const BASE_URL = 'https://localhost:7250/api/User/'
@@ -59,20 +60,106 @@ class UserService {
     }
   }
 
-  async validateUser(username: string, password: string): Promise<boolean> {
+  async updateUser(user: User): Promise<boolean> {
     try {
-      const response: AxiosResponse<User[]> = await axios.get(`${BASE_URL}?username=${username}&password=${password}`);
-      //na aplicação de vocês não retorna array não e o metodo sera um post que retorna um unico usuario.
-      if (response.data.length === 0) {
-        return false;
+      const formData = new FormData();
+      formData.append('name', user.name);
+      formData.append('email', user.email);
+      formData.append('password', user.password);
+
+      if (user.photo) {
+        const responsePhoto = await fetch(user.photo);
+        const blob = await responsePhoto.blob();
+        formData.append('photo', blob, 'photo.*');
       }
 
-      return response.status === 200;
+      const editResponse = await axios.put(BASE_URL + `UpdateUser/${user.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (editResponse.status === 200) {
+        return true;
+      } else {
+        console.error('Erro ao editar usuário:', editResponse.statusText);
+        return false;
+      }
     } catch (error) {
-      console.error('Erro ao validar usuário:', error);
-      return false; // Retorna false em caso de erro
+      console.error('Erro ao editar usuário:', error);
+      return false;
     }
   }
+
+
+  // async validateUser(username: string, password: string): Promise<boolean> {
+  //   try {
+  //     const response: AxiosResponse<User[]> = await axios.get(`${BASE_URL}?username=${username}&password=${password}`);
+  //     //na aplicação de vocês não retorna array não e o metodo sera um post que retorna um unico usuario.
+  //     if (response.data.length === 0) {
+  //       return false;
+  //     }
+
+  //     return response.status === 200;
+  //   } catch (error) {
+  //     console.error('Erro ao validar usuário:', error);
+  //     return false; // Retorna false em caso de erro
+  //   }
+  // }
+
+  //   async validateUser(email: string, password: string): Promise<boolean> {
+  //     try {
+  //         const response: AxiosResponse<{ token: string }> = await axios.post(`${BASE_URL}Login`, {
+  //             email: email,
+  //             password: password
+  //         });
+
+  //         if (response.status === 200 && response.data.token) {
+  //             return true;
+  //         } else {
+  //             return false;
+  //         }
+  //     } catch (error) {
+  //         console.error('Erro ao validar usuário:', error);
+  //         return false; // Retorna false em caso de erro
+  //     }
+  // }
+
+  async validateUser(email: string, password: string): Promise<User | null> {
+    try {
+      const response: AxiosResponse<{ token: string }> = await axios.post(`${BASE_URL}Login`, {
+        email: email,
+        password: password
+      });
+
+      if (response.status === 200 && response.data.token) {
+        // Se a autenticação for bem-sucedida, faça outra solicitação para obter os dados do usuário
+        const userResponse: AxiosResponse<User> = await axios.get(`${BASE_URL}UserByEmail/${email}`, {
+          headers: {
+            Authorization: `Bearer ${response.data.token}`
+          }
+        });
+
+        return userResponse.data; // Retorna os dados do usuário
+      } else {
+        return null; // Retorna null se a autenticação falhar
+      }
+    } catch (error) {
+      console.error('Erro ao validar usuário:', error);
+      return null; // Retorna null em caso de erro
+    }
+  }
+
+  async getUserImage(userId: number): Promise<UserImage | null> {
+    try {
+      const response = await axios.get<UserImage>(BASE_URL + `GetUserImage/` + userId);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter imagem do usuário:', error);
+      return null;
+    }
+  }
+
 }
 
 export default UserService;
