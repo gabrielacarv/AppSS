@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Platform, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -8,21 +8,46 @@ import { Group } from '../../types/groupType'
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { TextInputMask } from 'react-native-masked-text';
+import NumberFormat from 'react-number-format';
+import { User } from '../../types/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserService from '../../services/userService';
+
+
+
 
 const CriarGrupo = () => {
 
   const [image, setImage] = useState('');
   const [name, setName] = useState('');
-  const [quant, setQuant] = useState(0);
-  const [valor, setValor] = useState(0);
+  const [quant, setQuant] = useState('');
+  const [valor, setValor] = useState<number>(0.0);
   const [data, setData] = useState<Date>(new Date());
   const [descricao, setDescricao] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [inputValue2, setInputValue2] = useState('');
-
+  const [userData, setUserData] = useState<User | null>(null);
+  const [administratorID, setadministratorID] = useState('');
+  const groupService = new GroupService();
 
   const navigation = useNavigation<StackTypes>();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+        try {
+            const userDataString = await AsyncStorage.getItem('userData');
+            if (userDataString !== null) {
+                const userData = JSON.parse(userDataString);
+                setUserData(userData);
+                console.log(userData)
+            }
+        } catch (error) {
+            console.error('Erro ao recuperar dados do usuário:', error);
+        }
+    };
+    fetchUserData();
+}, []);
 
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -41,39 +66,44 @@ const CriarGrupo = () => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   };
 
+  
   const handleDataChange = (text: string) => {
-    setInputValue(text); 
+    setInputValue(text);
+    const date = new Date(text);
+    setData(date);
   };
+
 
   const handleChange = (text: string) => {
-    setInputValue2(text);
-  };
-
-  const groupService = new GroupService();
+    setInputValue2(text); 
+    const cleanedText = text.replace('R$', '').trim();
+    // const cleanedText = text.replace('R$', '').replace(',', '.').trim();
+    const floatValue = parseFloat(cleanedText);
+    setValor(floatValue);
+};
 
   const handleUpload = async () => {
     try {
       const group: Group = {
         idGroup: 2,
         name: name,
-        maxPeople: quant,
+        maxPeople: parseInt(quant),
         disclosureDate: data,
         value: valor,
         description: descricao,
-        administrator: 5,
-        icon: "imagem",
+        administrator: userData?.id ? userData?.id : 0,
+        icon: image,
       };
 
       const createGroup = await groupService.createGroup(group);
       if (createGroup) {
         console.log('Grupo adicionado com sucesso!');
+        navigation.navigate('Inicial');
       } else {
         console.log('Erro ao adicionar grupo');
       }
@@ -105,10 +135,10 @@ const CriarGrupo = () => {
 
         <TextInput
           style={styles.input}
-          placeholder='Qtd. máxima de participantes'
+          placeholder='Máx. de participantes'
           inputMode='numeric'
-          onChangeText={text => setQuant(parseFloat(text))} // ParseInt adicionado aqui
-          value={quant.toString()} // Convertido para string
+          onChangeText={text => setQuant(text)} // ParseInt adicionado aqui
+          value={quant} // Convertido para string
         />
 
         <TextInputMask
@@ -121,62 +151,61 @@ const CriarGrupo = () => {
           onChangeText={handleDataChange}
           value={inputValue}
         />
+
         {/* <TextInput
           style={styles.input}
           placeholder='Valor (R$)'
           inputMode="numeric"
-          onChangeText={text => setValor(parseFloat(text))} // ParseFloat adicionado aqui
-          value={valor.toString()} // Convertido para string
+          onChangeText={text => setValor(parseFloat(text))}
+          value={valor.toString()}
         /> */}
 
-
-{/* <TextInputMask
-  style={styles.input}
-  placeholder='Valor (R$)'
-  type={'money'}
-  options={{
-    precision: 2,
-    separator: ',',
-    delimiter: '.',
-    unit: 'R$ ',
-  }}
-  value={inputValue2}
-  onChangeText={handleChange }
-/> */}
-
-
-<TextInputMask
-  style={styles.input}
-  placeholder='Valor (R$)'
-  type={'money'}
-  options={{
-    precision: 2,
-    separator: ',',
-    delimiter: '.',
-    unit: 'R$ ',
-  }}
-  value={inputValue2}
-  onChangeText={(formatted, raw) => {
-    setInputValue2(formatted); // Atualiza o estado inputValue2 com o valor formatado
-    setValor(inputValue2 ? parseFloat(inputValue2.replace(',', '.')) : 0); // Atualiza o estado valor com o valor sem formatação
-  }}
-/>
-
-
-        {/* <TextInputMask
+        <TextInputMask
           style={styles.input}
-          placeholder='Valor (R$)'
           type={'money'}
           options={{
-            precision: 2, // Define a precisão para duas casas decimais
+            precision: 2,
             separator: ',',
             delimiter: '.',
             unit: 'R$ ',
           }}
-          value={valor.toString()}
-          onChangeText={(text) => setValor(parseFloat(text))}
-          inputMode="numeric"
-        /> */}
+          placeholder='Valor (R$)'
+          onChangeText={handleChange}
+          value={inputValue2}
+        />
+
+
+        {/* <TextInputMask
+  style={styles.input}
+  placeholder='Valor (R$)'
+  type={'money'}
+  options={{
+    precision: 2,
+    separator: ',',
+    delimiter: '.',
+    unit: 'R$ ',
+  }}
+  value={inputValue2}
+  onChangeText={handleChange}
+/> */}
+
+
+        {/* <TextInputMask
+  style={styles.input}
+  placeholder='Valor (R$)'
+  type={'money'}
+  options={{
+    precision: 2,
+    separator: ',',
+    delimiter: '.',
+    unit: 'R$ ',
+  }}
+  value={inputValue2}
+  onChangeText={(formatted, inputValue2) => {
+    setInputValue2(formatted); // Atualiza o estado inputValue2 com o valor formatado
+    setValor(inputValue2 ? parseFloat(inputValue2) : 0); // Atualiza o estado valor com o valor sem formatação
+  }}
+/> */}
 
         <TextInput
           style={styles.input}
@@ -187,7 +216,7 @@ const CriarGrupo = () => {
 
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleUpload}>
+      <TouchableOpacity style={styles.button} onPress={handleUpload} >
         <Text style={styles.buttonText}>Criar</Text>
       </TouchableOpacity>
 

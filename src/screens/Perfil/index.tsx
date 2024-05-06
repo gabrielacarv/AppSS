@@ -148,8 +148,10 @@ const Perfil = () => {
       if (success !== undefined) {
         if (success) {
           console.log('Usuário atualizado com sucesso!');
+          alert('Usuário atualizado com sucesso!');
         } else {
           console.error('Erro ao atualizar usuário');
+          alert('Erro ao atualizar usuário');
         }
       } else {
         console.error('Erro ao chamar a função updateUser');

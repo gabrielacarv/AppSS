@@ -87,8 +87,10 @@ const EditarGrupo = ({ route }: any) => {
             if (success !== undefined) {
                 if (success) {
                     console.log('Grupo atualizado com sucesso!');
+                    alert('Grupo atualizado com sucesso!');
                 } else {
                     console.error('Erro ao atualizar grupo');
+                    alert('Erro ao atualizar grupo');
                 }
             } else {
                 console.error('Erro ao chamar a função updateGroup');

@@ -38,6 +38,7 @@ class GroupService {
       });
 
       if (uploadResponse.status === 201) {
+        alert('Grupo adicionado com sucesso!');
         return true;
       } else if (uploadResponse.status === 409) {
         console.error('Email já cadastrado');
@@ -80,7 +81,8 @@ async updateGroup(group: Group): Promise<boolean> {
     formData.append('administrator', group.administrator.toString());
     formData.append('value', group.value.toString());
     formData.append('description', group.description);
-    formData.append('disclosureDate', group.disclosureDate.toISOString());
+    const da = new Date(group.disclosureDate)
+    formData.append('disclosureDate', da.toDateString());
     formData.append('maxPeople', group.maxPeople.toString());
     
 

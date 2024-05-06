@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Image, Alert } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
@@ -26,7 +26,6 @@ const Cadastro = () => {
   }
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -50,14 +49,17 @@ const Cadastro = () => {
         name: name,
         email: email,
         password: password,
-        photo: "image"
+        photo: image
       };
 
       const userAdded = await userService.addUser(user);
       if (userAdded) {
         console.log('Usuário adicionado com sucesso!');
+        alert('Usuário adicionado com sucesso!');
+        navigation.navigate('Login');
       } else {
         console.log('Erro ao adicionar usuário');
+        alert('Erro ao adicionar usuário');
       }
     } catch (error) {
       console.error('Error uploading image:', error);

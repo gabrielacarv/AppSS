@@ -55,12 +55,11 @@ const Inicial = () => {
         }
       } catch (error) {
         console.error('Erro ao buscar grupos:', error);
-        // Trate o erro de forma apropriada (ex: exibindo uma mensagem de erro para o usuário)
       }
     };
 
     fetchGrupos();
-  }, []);
+  }, [grupos]);
 
 
   // if (!fontsLoaded) {

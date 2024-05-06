@@ -2,9 +2,6 @@ import axios, { AxiosResponse } from 'axios';
 import { User } from '../types/types';
 import { UserImage } from '../types/userImage';
 
-// const BASE_URL = 'http://localhost:3000/User/';
-// const BASE_URL = 'https://localhost:7250/api/User/'
-// const BASE_URL = 'https://localhost:7217/api/User/'
 const BASE_URL = 'https://localhost:7186/api/User/'
 
 class UserService {
@@ -159,6 +156,25 @@ class UserService {
       return null;
     }
   }
+
+  async getUserByEmail(email: string): Promise<any> {
+    try {
+        const response = await axios.get(`${BASE_URL}UserByEmail/${email}`);
+        
+        // Axios não possui uma propriedade 'ok', verifique o status diretamente
+        if (response.status !== 200) {
+            // Se a resposta não estiver ok, lança um erro
+            throw new Error('Erro ao obter usuário');
+        }
+
+        // O resultado está disponível diretamente na propriedade 'data'
+        const user = response.data;
+        return user;
+    } catch (error) {
+        console.error('Erro:', error);
+        throw error;
+    }
+}
 
 }
 

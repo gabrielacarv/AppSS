@@ -31,7 +31,8 @@
     "react-native-image-picker": "^7.1.1",
     "react-native-masked-text": "^1.13.0",
     "react-native-modal-datetime-picker": "^17.1.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "react-number-format": "^5.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

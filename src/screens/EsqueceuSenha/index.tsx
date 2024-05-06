@@ -29,7 +29,7 @@ const EsqueceuSenha = () => {
       />
 
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Enviar E-mail</Text>
+        <Text style={styles.buttonText}>Enviar e-mail</Text>
       </TouchableOpacity>
     </View>
 

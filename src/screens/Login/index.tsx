@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
 
   buttonSec: {
     fontFamily: 'Poppins_400Regular',
-    color: '#49708a',
+    color: 'white',
     marginTop: 10
   },
 

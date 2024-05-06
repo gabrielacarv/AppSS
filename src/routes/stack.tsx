@@ -135,7 +135,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#f2601d',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
@@ -148,7 +148,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#f2601d',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,
