@@ -74,6 +74,16 @@ async GetParticipantsByGroup(groupId: number): Promise<User | null> {
   }
 }
 
+async GetGroupsPendingByUser(userId: number): Promise<Group []| null> {
+  try {
+      const response: AxiosResponse<Group[]> = await axios.get(BASE_URL + 'GetGroupsPendingByUser/'+ userId);
+      return response.data;
+  } catch (error) {
+      console.error('Erro ao buscar convites pendentes:', error);
+      return null;
+  }
+}
+
 async updateGroup(group: Group): Promise<boolean> {
   try {
     const formData = new FormData();

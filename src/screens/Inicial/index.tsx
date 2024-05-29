@@ -1,5 +1,5 @@
-import React, { useState, useEffect  } from 'react';
-import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Image, ScrollView, SafeAreaView  } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../../types/types';
 
 
- const BASE_URL = 'https://localhost:7186/api/Group/GetGroupsByUser/'
+const BASE_URL = 'https://localhost:7186/api/Group/GetGroupsByUser/'
 
 const Inicial = () => {
   const navigation = useNavigation<StackTypes>();
@@ -59,7 +59,7 @@ const Inicial = () => {
     };
 
     fetchGrupos();
-  }, [grupos]);
+  }, []);
 
 
   // if (!fontsLoaded) {
@@ -67,44 +67,56 @@ const Inicial = () => {
   // }
 
   return (
-    
-<View style={styles.containerGeral}>
-      <View style={styles.containerBtnPefilUsuario}>
-        <TouchableOpacity style={styles.btnPerfilUsuario} onPress={() => { navigation.navigate("Perfil"); }}>
-          <Text style={styles.btnCriarGrupoText}>Perfil</Text>
-        </TouchableOpacity>
+
+    <View style={styles.containerGeral}>
+      <View style={styles.containerBtnsSuperiores}>
+        <View style={styles.containerBtnPefilUsuario}>
+          <TouchableOpacity style={styles.btnPerfilUsuario} onPress={() => { navigation.navigate("Notificacao"); }}>
+            <Image source={require('../../../assets/images/sino.png')} style={styles.image} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.containerBtnPefilUsuario}>
+          <TouchableOpacity style={styles.btnPerfilUsuario} onPress={() => { navigation.navigate("Perfil"); }}>
+            <Text style={styles.btnCriarGrupoText}>Perfil</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-<SafeAreaView style={styles.container}>
-
-      <Text style={styles.title}>Grupos</Text>
-
-      <View style={styles.containerBtnCriarGrupo}>
-        <TouchableOpacity style={styles.btnCriarGrupo} onPress={() => { navigation.navigate("CriarGrupo"); }}>
-          <Text style={styles.btnCriarGrupoText}>+ Grupo</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView style={styles.container1} contentContainerStyle={{justifyContent: 'center', paddingRight: 0, alignItems: 'center'}} showsVerticalScrollIndicator={false}>
-      {grupos.map((grupo) => (
-        <TouchableOpacity key={grupo.idGroup} style={styles.containerGrupo} onPress={() => { navigation.navigate("DetalhesGrupo", { grupoId: grupo.idGroup }); }}>
-          <View style={styles.infoPrincipalGrupo} >
-            <Image source={grupo.icon ? { uri: `data:image;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
-            <Text style={styles.Text}>{grupo.name}</Text>
-          </View>
-          <Text style={styles.Text}>{`0/${grupo.maxPeople}`}</Text>      
-        </TouchableOpacity>
-        
-      ))}
-      </ScrollView>
       
-    </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+
+        <Text style={styles.title}>Grupos</Text>
+
+        <View style={styles.containerBtnCriarGrupo}>
+          <TouchableOpacity style={styles.btnCriarGrupo} onPress={() => { navigation.navigate("CriarGrupo"); }}>
+            <Text style={styles.btnCriarGrupoText}>+ Grupo</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={styles.container1} contentContainerStyle={{ justifyContent: 'center', paddingRight: 0, alignItems: 'center' }} showsVerticalScrollIndicator={false}>
+          {grupos.map((grupo) => (
+            <TouchableOpacity key={grupo.idGroup} style={styles.containerGrupo} onPress={() => { navigation.navigate("DetalhesGrupo", { grupoId: grupo.idGroup }); }}>
+              <View style={styles.infoPrincipalGrupo} >
+                <Image source={grupo.icon ? { uri: `data:image;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
+                <Text style={styles.Text}>{grupo.name}</Text>
+              </View>
+              <Text style={styles.Text}>{`0/${grupo.maxPeople}`}</Text>
+            </TouchableOpacity>
+
+          ))}
+        </ScrollView>
+
+      </SafeAreaView>
     </View>
   );
 };
 
 
 const styles = StyleSheet.create({
-  containerGeral:{
+  image: {
+    width: 24, // Ajuste conforme necessário
+    height: 24, // Ajuste conforme necessário
+    // Outros estilos para a imagem
+},
+  containerGeral: {
     flex: 1,
     backgroundColor: 'white',
   },
@@ -125,9 +137,9 @@ const styles = StyleSheet.create({
   },
 
   infoPrincipalGrupo: {
-      flexDirection: 'row',
-      gap: 25,
-      alignItems: 'center',
+    flexDirection: 'row',
+    gap: 25,
+    alignItems: 'center',
   },
 
   title: {
@@ -137,16 +149,21 @@ const styles = StyleSheet.create({
     color: '#49708a',
   },
 
-  containerBtnCriarGrupo:{
+  containerBtnCriarGrupo: {
     justifyContent: 'flex-end',
   },
 
-  containerBtnPefilUsuario:{
+  containerBtnPefilUsuario: {
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     backgroundColor: 'white',
     marginRight: 10,
     padding: 5
+  },
+
+  containerBtnsSuperiores: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 
   // input: {
@@ -223,7 +240,7 @@ const styles = StyleSheet.create({
     // padding: 10,
   },
 
-  btnCriarGrupo:{
+  btnCriarGrupo: {
     width: 300,
     height: 35,
     padding: 0,
@@ -235,14 +252,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  btnCriarGrupoText:{
+  btnCriarGrupoText: {
     color: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'Poppins_700Bold'
   },
 
-  btnPerfilUsuario:{
+  btnPerfilUsuario: {
     width: 30,
     height: 35,
     padding: 20,
@@ -253,6 +270,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     justifyContent: 'center',
   },
-  
+
 });
 export default Inicial;

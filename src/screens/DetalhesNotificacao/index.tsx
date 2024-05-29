@@ -14,8 +14,7 @@ import { Invitation } from '../../types/invitationType';
 import UserService from '../../services/userService';
 
 
-
-const DetalhesGrupo = ({ route }: any) => {
+const DetalhesNotificacao = ({ route }: any) => {
     const navigation = useNavigation<StackTypes>();
     const [userData, setUserData] = useState<User | null>(null);
     const [grupo, setGrupo] = useState<Group | null>(null);
@@ -33,10 +32,32 @@ const DetalhesGrupo = ({ route }: any) => {
     const isFocused = useIsFocused();
 
     const [expanded, setExpanded] = useState(false);
-    
+
 
     const toggleExpand = () => {
         setExpanded(!expanded);
+    };
+
+    const RecusarConvite = async (id: number) => {
+        try {
+            await invitationService.updateStatus(id, 'Recusado');
+            alert('Convite recusado com sucesso');
+            navigation.navigate("Notificacao");
+        } catch (error) {
+            console.error('Erro ao recusar convite:', error);
+            alert('Erro ao recusar convite. Tente novamente mais tarde.');
+        }
+    };
+
+    const AceitarConvite = async (id: number) => {
+        try {
+            await invitationService.updateStatus(id, 'Aceito');
+            alert('Convite aceito com sucesso');
+            navigation.navigate("Notificacao");
+        } catch (error) {
+            console.error('Erro ao aceitar convite:', error);
+            alert('Erro ao aceitar convite. Tente novamente mais tarde.');
+        }
     };
 
     useEffect(() => {
@@ -105,96 +126,46 @@ const DetalhesGrupo = ({ route }: any) => {
         if (userData?.id === grupo?.administrator) {
             return (
                 <View style={styles.containerAddParticipantes}>
-                                        <TextInput
-                                            style={styles.input}
-                                            placeholder='Email do Participante'
-                                            onChangeText={text => setNewParticipantEmail(text)}
-                                            value={newParticipantEmail}
-                                        />
-                                        <TouchableOpacity style={styles.btnAddParticipantes} onPress={handleAddParticipant}>
-                                            <Text style={styles.textAddParticipantes}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Email do Participante'
+                        onChangeText={text => setNewParticipantEmail(text)}
+                        value={newParticipantEmail}
+                    />
+                    <TouchableOpacity style={styles.btnAddParticipantes} onPress={handleAddParticipant}>
+                        <Text style={styles.textAddParticipantes}>+</Text>
+                    </TouchableOpacity>
+                </View>
             );
         } else {
             return null; // Retorna null se a condição não for verdadeira
         }
     };
 
-    // const handleAddParticipant = async () => {
-    //     // Verifique se o email do participante não está vazio
-    //     if (!newParticipantEmail.trim()) {
-    //         alert('Por favor, insira um email válido.');
-    //         return;
-    //     }
-    
-    //     try {
-    //         // Verifique se o participante já está no grupo
-    //         // if (participante && participante.some(p => p.email === newParticipantEmail)) {
-    //         //     alert('Este participante já está no grupo.');
-    //         //     return;
-    //         // }
-    
-    //         // // Verifique se o participante existe no banco de dados
-    //         // const participantExists = await groupService.checkParticipantExists(newParticipantEmail);
-    
-    //         // if (!participantExists) {
-    //         //     alert('Este participante não existe.');
-    //         //     return;
-    //         // }
-
-    //         const rem : User =  userService.getUserByEmail(newParticipantEmail)
-    //         const id = rem.id ? rem.id : 0
-    //         setRemetenteId(id);
-
-    //         setgrupoId(grupo?.idGroup ? grupo?.idGroup : 0)
-
-    //         const invitation: Invitation = {
-    //             groupId: grupoId,
-    //             recipientId: remetenteId,
-    //             senderId: userData?.id ? userData.id : 0,
-    //             status: 'Aceito',
-    //           };
-    
-    //         // // Adicione o participante ao grupo
-    //         invitationService.createInvitation(invitation);
-    
-    //         // Atualize a lista de participantes
-    //         const updatedParticipants = await groupService.GetParticipantsByGroup(route.params.grupoId);
-    //         setparticipante(updatedParticipants);
-    
-    //         // Limpe o campo de email do participante
-    //         setNewParticipantEmail('');
-    //     } catch (error) {
-    //         console.error('Erro ao adicionar participante:', error);
-    //         alert('Erro ao adicionar participante. Tente novamente mais tarde.');
-    //     }
-    // };
-    
     const handleAddParticipant = async () => {
         // Verifique se o email do participante não está vazio
         if (!newParticipantEmail.trim()) {
             alert('Por favor, insira um email válido.');
             return;
         }
-    
+
         try {
             // Obtenha o usuário pelo email
             const rem: User = await userService.getUserByEmail(newParticipantEmail);
-            
+
             // Verifique se o usuário foi encontrado
             if (!rem) {
                 alert('Usuário não encontrado.');
                 return;
             }
-    
+
             // Extraia o ID do usuário
             const id = rem.id ? rem.id : 0;
-    
+
             // Defina o ID do remetente e o ID do grupo
             setRemetenteId(id);
             setgrupoId(grupo?.idGroup ? grupo?.idGroup : 0);
-    
+
             // Crie um objeto de convite
             const invitation: Invitation = {
                 groupId: grupoId,
@@ -202,14 +173,14 @@ const DetalhesGrupo = ({ route }: any) => {
                 senderId: userData?.id ? userData.id : 0,
                 status: 'Aceito',
             };
-    
+
             // Envie o convite para o serviço
             invitationService.createInvitation(invitation);
-    
+
             // Atualize a lista de participantes
             const updatedParticipants = await groupService.GetParticipantsByGroup(route.params.grupoId);
             setparticipante(updatedParticipants);
-    
+
             // Limpe o campo de email do participante
             setNewParticipantEmail('');
         } catch (error) {
@@ -217,7 +188,7 @@ const DetalhesGrupo = ({ route }: any) => {
             alert('Erro ao adicionar participante. Tente novamente mais tarde.');
         }
     };
-    
+
 
 
     return (
@@ -259,9 +230,9 @@ const DetalhesGrupo = ({ route }: any) => {
                                 </TouchableOpacity>
                                 <ScrollView style={styles.containerParticipantes} contentContainerStyle={{ justifyContent: 'center', paddingRight: 0, alignItems: 'center' }}>
                                     <Text style={styles.titleParticipantes}>Participantes</Text>
-                                    
+
                                     <VerificaAdministrador2 />
-                                    
+
                                     {participante.map(participante => (
                                         <TouchableOpacity key={participante.id} style={styles.containerMostraParticipante}>
                                             <Image source={participante.icon ? { uri: `data:image/jpeg;base64,${participante.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
@@ -278,13 +249,15 @@ const DetalhesGrupo = ({ route }: any) => {
                                     <Text style={styles.text}>Sorteio não realizado!</Text>
                                 </View>
                             </TouchableOpacity>
+                            <View style={styles.containerAceitarConvite}>
+                                <TouchableOpacity style={styles.btnSairDoGrupo} onPress={() => RecusarConvite(grupo.idGroup)}>
+                                    <Text style={styles.textBtnSairDoGrupo}>Recusar</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.btnSairDoGrupo}>
-                                <Text style={styles.textBtnSairDoGrupo}>Sair do Grupo</Text>
-                            </TouchableOpacity>
-
-
-
+                                <TouchableOpacity style={styles.btnAceitar} onPress={() => AceitarConvite(grupo.idGroup)}>
+                                    <Text style={styles.textBtnSairDoGrupo}>Aceitar</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </ScrollView>
                 </>
@@ -321,7 +294,7 @@ const styles = StyleSheet.create({
         gap: 25,
     },
 
-    containerAddParticipantes:{
+    containerAddParticipantes: {
         width: '90%',
         flexDirection: 'row',
         alignItems: 'center',
@@ -456,9 +429,18 @@ const styles = StyleSheet.create({
     },
 
     btnSairDoGrupo: {
-        width: '40%',
+        width: '60%',
         height: 35,
         backgroundColor: '#F2441D',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    btnAceitar: {
+        width: '60%',
+        height: 35,
+        backgroundColor: '#98A62D',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
@@ -474,7 +456,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    btnAddParticipantes:{
+    btnAddParticipantes: {
         width: '10%',
         height: 20,
         backgroundColor: '#F29422',
@@ -494,7 +476,7 @@ const styles = StyleSheet.create({
         fontSize: 10
     },
 
-    textAddParticipantes:{
+    textAddParticipantes: {
         fontFamily: 'Poppins_700Bold',
         color: '#ffffff',
         fontSize: 20
@@ -511,10 +493,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#f0f0f0',
         fontSize: 12
-      },
+    },
 
+    containerAceitarConvite: {
+        flexDirection: 'row',
+        gap: 5,
+    },
 });
 
 
 
-export default DetalhesGrupo;
+export default DetalhesNotificacao;

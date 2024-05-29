@@ -11,6 +11,9 @@ import CriarGrupo from '../screens/CriarGrupo';
 import DetalhesGrupo from '../screens/DetalhesGrupo';
 import Perfil from '../screens/Perfil';
 import EditarGrupo from '../screens/EditarGrupo'
+import Splash from '../screens/Splash';
+import Notificacao from '../screens/Notificacao';
+import DetalhesNotificacao from '../screens/DetalhesNotificacao';
 
 
 
@@ -18,6 +21,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 type StackNavigation = {
+  // Splash: undefined;
   Home: undefined;
   Login: undefined;
   Cadastro: undefined;
@@ -27,6 +31,8 @@ type StackNavigation = {
   DetalhesGrupo: { grupoId : number | undefined};
   Perfil: undefined;
   EditarGrupo: { grupoId : number | undefined};
+  Notificacao: undefined;
+  DetalhesNotificacao: { grupoId : number | undefined};
 };
 
 // type TabNavigation = {
@@ -39,6 +45,18 @@ export type StackTypes = NativeStackNavigationProp<StackNavigation>;
 const StackComponent = () => (
   <NavigationContainer>
     <Stack.Navigator>
+    {/* <Stack.Screen 
+        name="Splash" 
+        component={Splash} 
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: 'white',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })} /> */}
       <Stack.Screen 
         name="Home" 
         component={Home} 
@@ -145,6 +163,32 @@ const StackComponent = () => (
       <Stack.Screen
         name="EditarGrupo"
         component={EditarGrupo} 
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: '#f2601d',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="Notificacao"
+        component={Notificacao} 
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: '#ffffff',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="DetalhesNotificacao"
+        component={DetalhesNotificacao} 
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
