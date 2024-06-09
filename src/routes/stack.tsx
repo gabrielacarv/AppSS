@@ -14,6 +14,7 @@ import EditarGrupo from '../screens/EditarGrupo'
 import Splash from '../screens/Splash';
 import Notificacao from '../screens/Notificacao';
 import DetalhesNotificacao from '../screens/DetalhesNotificacao';
+import RedefinirSenha from '../screens/RedefinirSenha'
 
 
 
@@ -28,11 +29,12 @@ type StackNavigation = {
   EsqueceuSenha: undefined;
   Inicial: undefined;
   CriarGrupo: undefined;
-  DetalhesGrupo: { grupoId : number | undefined};
+  DetalhesGrupo: { grupoId: number | undefined };
   Perfil: undefined;
-  EditarGrupo: { grupoId : number | undefined};
+  EditarGrupo: { grupoId: number | undefined };
   Notificacao: undefined;
-  DetalhesNotificacao: { grupoId : number | undefined};
+  DetalhesNotificacao: { grupoId: number | undefined };
+  RedefinirSenha: undefined;
 };
 
 // type TabNavigation = {
@@ -45,7 +47,7 @@ export type StackTypes = NativeStackNavigationProp<StackNavigation>;
 const StackComponent = () => (
   <NavigationContainer>
     <Stack.Navigator>
-    {/* <Stack.Screen 
+      {/* <Stack.Screen 
         name="Splash" 
         component={Splash} 
         options={({ route, navigation }) => ({
@@ -57,9 +59,9 @@ const StackComponent = () => (
             borderBottomWidth: 0,
           },
         })} /> */}
-      <Stack.Screen 
-        name="Home" 
-        component={Home} 
+      <Stack.Screen
+        name="Home"
+        component={Home}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -136,7 +138,7 @@ const StackComponent = () => (
       />
       <Stack.Screen
         name="DetalhesGrupo"
-        component={DetalhesGrupo} 
+        component={DetalhesGrupo}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -149,7 +151,7 @@ const StackComponent = () => (
       />
       <Stack.Screen
         name="Perfil"
-        component={Perfil} 
+        component={Perfil}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -162,7 +164,7 @@ const StackComponent = () => (
       />
       <Stack.Screen
         name="EditarGrupo"
-        component={EditarGrupo} 
+        component={EditarGrupo}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -175,7 +177,7 @@ const StackComponent = () => (
       />
       <Stack.Screen
         name="Notificacao"
-        component={Notificacao} 
+        component={Notificacao}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -188,11 +190,24 @@ const StackComponent = () => (
       />
       <Stack.Screen
         name="DetalhesNotificacao"
-        component={DetalhesNotificacao} 
+        component={DetalhesNotificacao}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
             backgroundColor: '#f2601d',
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="RedefinirSenha"
+        component={RedefinirSenha}
+        options={({ route, navigation }) => ({
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: '#98A62D',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,

@@ -3,11 +3,17 @@ import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity 
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import axios from 'axios';
+import UserService from '../../services/userService';
+import { User } from '../../types/types';
 
 
 const EsqueceuSenha = () => {
 
   const navigation = useNavigation<StackTypes>();
+  const userService = new UserService();
+  const [email, setEmail] = useState('gabriel_alvescarvalho@hotmail.com');
+  const [message, setMessage] = useState('');
 
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -18,19 +24,48 @@ const EsqueceuSenha = () => {
     return null;
   }
 
+  const handleSubmit = async () => {
+    try {
+      const response = await userService.requestPasswordReset(email);
+      if (response) {
+        setMessage('Email de recuperação enviado. Verifique sua caixa de entrada.');
+        setTimeout(() => {
+          navigation.navigate('RedefinirSenha');
+        }, 3000);
+      } else {
+        setMessage('Erro ao enviar email de recuperação.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar email de recuperação:', error);
+      setMessage('Erro ao enviar email de recuperação.');
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recuperar Conta</Text>
 
       {/* <Text style={styles.labelText}>E-mail</Text> */}
+      {/* <TextInput
+        style={styles.input}
+        placeholder='E-mail'
+      /> */}
+
       <TextInput
         style={styles.input}
         placeholder='E-mail'
+        value={email}
+        onChangeText={setEmail}
+        keyboardType='email-address'
+        autoCapitalize='none'
       />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Enviar e-mail</Text>
       </TouchableOpacity>
+
+      {message && <p>{message}</p>}
     </View>
 
   );
