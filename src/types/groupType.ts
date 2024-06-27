@@ -1,5 +1,5 @@
 export interface Group {
-  idGroup: number;
+  idGroup?: number;
   name: string;
   maxPeople: number;
   disclosureDate: Date;

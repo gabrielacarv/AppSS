@@ -11,7 +11,6 @@ import GroupService from '../../services/groupService';
 import { TextInputMask } from 'react-native-masked-text';
 
 
-
 const EditarGrupo = ({ route }: any) => {
     const [userData, setUserData] = useState<Group | null>(null);
     const [editable, setEditable] = useState<boolean>(false);
@@ -25,6 +24,8 @@ const EditarGrupo = ({ route }: any) => {
 
     const groupService = new GroupService();
     const userService = new UserService();
+    const navigation = useNavigation<StackTypes>();
+
 
     const handleDataChange = (text: string) => {
         setInputValue(text);
@@ -75,7 +76,7 @@ const EditarGrupo = ({ route }: any) => {
             setInputValue(new Date(grupo.disclosureDate).toLocaleDateString('pt-BR'));
         }
     }, [grupo]);
-    
+
 
     const handleEdit = () => {
         setEditable(true);
@@ -101,11 +102,23 @@ const EditarGrupo = ({ route }: any) => {
         setEditable(false);
     };
 
+    const handleDelete = async () => {
+        if (grupo?.idGroup) {
+          const result = await groupService.deleteGroup(grupo.idGroup);
+          if (result) {
+            alert('Grupo excluído com sucesso.');
+            navigation.navigate('Inicial');
+          } else {
+            alert('Erro ao excluir o grupo.');
+          }
+        }
+      };
+
     const isValidDate = (dateString: string): boolean => {
         // Expressão regular para validar a data no formato 'DD/MM/YYYY'
         const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
         return dateRegex.test(dateString);
-      };
+    };
 
     return (
         <View style={styles.container}>
@@ -218,14 +231,23 @@ const EditarGrupo = ({ route }: any) => {
 
                 {editable ? (
                     // Botão para confirmar as alterações quando estiver em modo de edição
-                    <TouchableOpacity onPress={handleConfirm}>
-                        <Text>Confirmar</Text>
+                    <TouchableOpacity style={styles.btnConfirmar} onPress={handleConfirm}>
+                        <Text style={styles.textbtnEditar}>Confirmar</Text>
                     </TouchableOpacity>
                 ) : (
                     // Botão para iniciar a edição dos campos
-                    <TouchableOpacity onPress={handleEdit}>
-                        <Text>Editar</Text>
-                    </TouchableOpacity>
+                    // <TouchableOpacity onPress={handleEdit}>
+                    //     <Text>Editar</Text>
+                    // </TouchableOpacity>
+                    // <View style={styles.containerFormulario2}>
+                    <View style={styles.containerFormulario2}>
+                        <TouchableOpacity style={styles.btnEditar} onPress={handleEdit}>
+                            <Text style={styles.textbtnEditar}>Editar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.btnSair} onPress={handleDelete}>
+                            <Text style={styles.textBtnSair}>Excluir</Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
             </View>
         </View>
@@ -259,6 +281,53 @@ const styles = StyleSheet.create({
         width: '90%',
         // padding: 20,
         // margin: 15,
+    },
+
+    btnConfirmar: {
+        width: '50%',
+        height: 25,
+        // backgroundColor: '#F2441D',
+        backgroundColor: '#98A62D',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        marginBottom: 20,
+        marginTop: 10,
+    },
+
+    btnEditar: {
+        width: '50%',
+        height: 25,
+        // backgroundColor: '#F2441D',
+        backgroundColor: '#f2a622',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        marginBottom: 20,
+        marginTop: 10,
+    },
+
+    textbtnEditar: {
+        fontFamily: 'Poppins_700Bold',
+        color: '#ffffff',
+        fontSize: 12
+    },
+
+    btnSair: {
+        width: '100%',
+        height: 30,
+        backgroundColor: '#F2441D',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5
+    },
+
+    textBtnSair: {
+        fontFamily: 'Poppins_700Bold',
+        color: '#ffffff'
     },
 
     title: {

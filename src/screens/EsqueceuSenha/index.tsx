@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -6,39 +6,50 @@ import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-font
 import axios from 'axios';
 import UserService from '../../services/userService';
 import { User } from '../../types/types';
+import { ActivityIndicator } from 'react-native';
 
 
 const EsqueceuSenha = () => {
 
   const navigation = useNavigation<StackTypes>();
   const userService = new UserService();
-  const [email, setEmail] = useState('gabriel_alvescarvalho@hotmail.com');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
+
 
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_700Bold,
   });
 
+  useEffect(() => {
+    setLoading(false); // Garante que o estado de carregamento está inicializado como falso
+}, []);
+
   if (!fontsLoaded) {
     return null;
   }
 
   const handleSubmit = async () => {
+    setLoading(true); // Ativa a animação de carregamento ao iniciar o envio do email
     try {
       const response = await userService.requestPasswordReset(email);
       if (response) {
-        setMessage('Email de recuperação enviado. Verifique sua caixa de entrada.');
-        setTimeout(() => {
+          alert('Email de recuperação enviado. Verifique sua caixa de entrada.');
+          // setTimeout(() => {
+          //     navigation.navigate('RedefinirSenha');
+          // }, 3000);
           navigation.navigate('RedefinirSenha');
-        }, 3000);
       } else {
-        setMessage('Erro ao enviar email de recuperação.');
+          setMessage('Erro ao enviar email de recuperação.');
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Erro ao enviar email de recuperação:', error);
-      setMessage('Erro ao enviar email de recuperação.');
-    }
+      alert('Erro ao enviar email de recuperação.');
+  } finally {
+      setLoading(false); // Desativa a animação de carregamento após o envio do email
+  }
   };
   
 
@@ -61,9 +72,17 @@ const EsqueceuSenha = () => {
         autoCapitalize='none'
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+      {/* <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Enviar e-mail</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+        <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+                {loading ? (
+                    <ActivityIndicator size='small' color='#ffffff' /> // Mostra a animação de carregamento se estiver carregando
+                ) : (
+                    <Text style={styles.buttonText}>Enviar e-mail</Text>
+                )}
+            </TouchableOpacity>
 
       {message && <p>{message}</p>}
     </View>

@@ -13,6 +13,7 @@ const Cadastro = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const navigation = useNavigation<StackTypes>();
 
@@ -42,10 +43,37 @@ const Cadastro = () => {
 
   const userService = new UserService();
 
+  const validateEmail = (email: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    const hasNumber = /\d/;
+    const hasLetter = /[a-zA-Z]/;
+    return password.length >= 8 && hasNumber.test(password) && hasLetter.test(password);
+  };
+
   const handleUpload = async () => {
+
+    if (!validateEmail(email)) {
+      alert('Por favor, insira um e-mail válido.');
+      console.log('email errado');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      alert('A senha deve ter pelo menos 8 caracteres, contendo letras e números.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert('As senhas não coincidem.');
+      return;
+    }
+
     try {
       const user: User = {
-        id: 2,
         name: name,
         email: email,
         password: password,
@@ -98,6 +126,7 @@ const Cadastro = () => {
           placeholder='E-mail'
           onChangeText={text => setEmail(text)}
           value={email}
+          keyboardType="email-address"
         />
 
         {/* <Text style={styles.labelText}>Senha</Text> */}
@@ -114,6 +143,8 @@ const Cadastro = () => {
           style={styles.input}
           placeholder='Confirmar senha'
           secureTextEntry={true}
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
         />
       </View>
 
@@ -176,13 +207,14 @@ const styles = StyleSheet.create({
   },
 
   buttonImg: {
-    width: '40%',
+    width: '45%',
     height: 30,
-    backgroundColor: '#8c320b',
+    backgroundColor: '#f2601d',
     borderRadius: 500,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 10,
+    padding: 5
   },
 
   buttonText: {

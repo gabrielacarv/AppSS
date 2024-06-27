@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
 import { StackTypes } from '../../routes/stack';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { Group } from '../../types/groupType'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,7 +12,7 @@ const BASE_URL = 'https://localhost:7186/api/Group/GetGroupsByUser/'
 
 const Inicial = () => {
   const navigation = useNavigation<StackTypes>();
-
+  const isFocused = useIsFocused();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [grupos, setGrupos] = useState<Group[]>([]);
 
@@ -59,7 +59,7 @@ const Inicial = () => {
     };
 
     fetchGrupos();
-  }, []);
+  }, [isFocused, navigation]);
 
 
   // if (!fontsLoaded) {
@@ -77,7 +77,8 @@ const Inicial = () => {
         </View>
         <View style={styles.containerBtnPefilUsuario}>
           <TouchableOpacity style={styles.btnPerfilUsuario} onPress={() => { navigation.navigate("Perfil"); }}>
-            <Text style={styles.btnCriarGrupoText}>Perfil</Text>
+            {/* <Text style={styles.btnCriarGrupoText}>Perfil</Text> */}
+            <Image source={require('../../../assets/images/perfil.png')} style={styles.image}/>
           </TouchableOpacity>
         </View>
       </View>
@@ -98,7 +99,7 @@ const Inicial = () => {
                 <Image source={grupo.icon ? { uri: `data:image;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
                 <Text style={styles.Text}>{grupo.name}</Text>
               </View>
-              <Text style={styles.Text}>{`0/${grupo.maxPeople}`}</Text>
+              {/* <Text style={styles.Text}>{`0/${grupo.maxPeople}`}</Text> */}
             </TouchableOpacity>
 
           ))}
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
 
   container1: {
     // flex: 1,
-    width: '90%',
+    width: '100%',
     maxHeight: '70%',
     // justifyContent: 'center',
     // alignItems: 'center',
@@ -157,13 +158,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     backgroundColor: 'white',
-    marginRight: 10,
+    marginRight: 15,
+    marginLeft: 15,
     padding: 5
   },
 
   containerBtnsSuperiores: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
 
   // input: {
@@ -211,6 +213,7 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     paddingLeft: 30,
     justifyContent: 'space-between',
+    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F29422',
     borderRadius: 10,
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
   },
 
   btnCriarGrupo: {
-    width: 300,
+    width: 310,
     height: 35,
     padding: 0,
     alignItems: 'center',
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
     height: 35,
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#98A62D',
+    backgroundColor: '#f2601d',
     borderRadius: 10,
     flexDirection: 'row',
     marginBottom: 15,

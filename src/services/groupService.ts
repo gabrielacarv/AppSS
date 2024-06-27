@@ -129,6 +129,33 @@ async getGroupImage(groupId: number): Promise<UserImage | null> {
     return null;
   }
 }
+
+async deleteGroup(groupId: number): Promise<boolean> {
+  try {
+    const response: AxiosResponse<void> = await axios.put(BASE_URL + `DeleteGroup/${groupId}`);
+    return response.status === 200;
+  } catch (error) {
+    console.error('Erro ao deletar grupo:', error);
+    return false;
+  }
+}
+
+async leaveGroup(groupId: number, participantId: number): Promise<boolean> {
+  try {
+    const response: AxiosResponse<void> = await axios.put(BASE_URL + `LeaveGroup/${groupId}/${participantId}`);
+    
+    if (response.status === 200) {
+      console.log(`Usuário com ID ${participantId} saiu do grupo com ID ${groupId}`);
+      return true;
+    } else {
+      console.error('Erro ao sair do grupo:', response.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error('Erro ao sair do grupo:', error);
+    return false;
+  }
+}
   
 }
 

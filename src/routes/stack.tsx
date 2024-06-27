@@ -194,7 +194,7 @@ const StackComponent = () => (
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
-            backgroundColor: '#f2601d',
+            backgroundColor: 'white',
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 0,

@@ -81,12 +81,12 @@ const Notificacao = () => {
         };
 
         fetchGrupo();
-    }, []);
+    }, [grupos]);
 
     return (
         <View style={styles.containerGeral}>
             <SafeAreaView style={styles.container}>
-                <Text style={styles.title}>NOTIFICAÇÃO</Text>
+                <Text style={styles.title}>Notificação</Text>
 
                 <ScrollView style={styles.container1} contentContainerStyle={{ justifyContent: 'center', paddingRight: 0, alignItems: 'center' }} showsVerticalScrollIndicator={false}>
                     {grupos.map((grupo) => (
@@ -95,8 +95,6 @@ const Notificacao = () => {
                                 <Image source={grupo.icon ? { uri: `data:image;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
                                 <Text style={styles.Text}>{grupo.name}</Text>
                             </View>
-                            <TouchableOpacity>V</TouchableOpacity>
-                            <TouchableOpacity>X</TouchableOpacity>
                         </TouchableOpacity>
                     ))}
                 </ScrollView>

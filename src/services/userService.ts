@@ -21,6 +21,16 @@ class UserService {
   //   }
   // }
 
+  async getUserById(userId: number): Promise<User | null> {
+    try {
+      const response: AxiosResponse<User> = await axios.get(`${BASE_URL}UserById/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter usuário pelo ID:', error);
+      return null;
+    }
+  }
+
   async addUser(user: User): Promise<boolean> {
     try {
       //  const response = await axios.post(`${BASE_URL}`, user);

@@ -90,7 +90,6 @@ const CriarGrupo = () => {
   const handleUpload = async () => {
     try {
       const group: Group = {
-        idGroup: 2,
         name: name,
         maxPeople: parseInt(quant),
         disclosureDate: data,

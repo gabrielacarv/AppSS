@@ -80,7 +80,7 @@ const Perfil = () => {
   const [nome, setNome] = useState<string>('');
   const userService = new UserService();
   const [imageUri, setImageUri] = useState<string | null>(null);
-
+  const navigation = useNavigation<StackTypes>();
 
   // useEffect(() => {
   //   const fetchUserData = async () => {
@@ -171,8 +171,8 @@ const Perfil = () => {
 
         <Image source={imageUri ? { uri: `data:image;base64,${imageUri}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.imageLogo} />
 
-        <TouchableOpacity>
-          <Text>Alterar Imagem</Text>
+        <TouchableOpacity style={styles.btnEditarImagem}>
+          <Text style={styles.textbtnEditar}>Alterar Imagem</Text>
         </TouchableOpacity>
 
         {userData ? (
@@ -183,7 +183,6 @@ const Perfil = () => {
               value={userData.name}
               onChangeText={(text) => setUserData({ ...userData, name: text })}
             />
-
 
             <TextInput
               style={[styles.input, !editable && styles.readOnly]}
@@ -211,9 +210,16 @@ const Perfil = () => {
           </TouchableOpacity>
         ) : (
           // Botão para iniciar a edição dos campos
-          <TouchableOpacity onPress={handleEdit}>
-            <Text>Editar</Text>
-          </TouchableOpacity>
+
+          <View style={styles.containerFormulario2}>
+            <TouchableOpacity style={styles.btnEditar} onPress={handleEdit}>
+              <Text style={styles.textbtnEditar}>Editar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btnSair} onPress={() => {navigation.navigate('Login');}}>
+              <Text style={styles.textBtnSair}>Sair</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </View>
@@ -251,7 +257,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 30,
-    marginBottom: 20,
+    marginBottom: 0,
     fontFamily: 'Poppins_700Bold',
     color: '#ffffff',
   },
@@ -291,6 +297,52 @@ const styles = StyleSheet.create({
     color: '#49708a',
     marginTop: 10
   },
+
+  btnSair: {
+    width: '100%',
+    height: 30,
+    backgroundColor: '#F2441D',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5
+  },
+
+  textBtnSair: {
+    fontFamily: 'Poppins_700Bold',
+    color: '#ffffff'
+  },
+
+  btnEditarImagem: {
+    width: '50%',
+    height: 25,
+    // backgroundColor: '#F2441D',
+    backgroundColor: '#F29422',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    marginBottom: 10
+  },
+
+  btnEditar: {
+    width: '50%',
+    height: 25,
+    // backgroundColor: '#F2441D',
+    backgroundColor: '#F29422',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    marginBottom: 20
+  },
+
+  textbtnEditar: {
+    fontFamily: 'Poppins_700Bold',
+    color: '#ffffff',
+    fontSize: 12
+  },
+
 
   labelText: {
     fontFamily: 'Poppins_400Regular',

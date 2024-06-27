@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import InvitationService from '../../services/invitationService';
 import { Invitation } from '../../types/invitationType';
 import UserService from '../../services/userService';
+import { ActivityIndicator } from 'react-native';
 
 
 const DetalhesNotificacao = ({ route }: any) => {
@@ -38,9 +39,9 @@ const DetalhesNotificacao = ({ route }: any) => {
         setExpanded(!expanded);
     };
 
-    const RecusarConvite = async (id: number) => {
+    const RecusarConvite = async (id: number, recipientId: number) => {
         try {
-            await invitationService.updateStatus(id, 'Recusado');
+            await invitationService.updateStatus(id, 'Recusado', recipientId);
             alert('Convite recusado com sucesso');
             navigation.navigate("Notificacao");
         } catch (error) {
@@ -49,9 +50,9 @@ const DetalhesNotificacao = ({ route }: any) => {
         }
     };
 
-    const AceitarConvite = async (id: number) => {
+    const AceitarConvite = async (id: number, recipientId: number) => {
         try {
-            await invitationService.updateStatus(id, 'Aceito');
+            await invitationService.updateStatus(id, 'Aceito', recipientId);
             alert('Convite aceito com sucesso');
             navigation.navigate("Notificacao");
         } catch (error) {
@@ -60,141 +61,117 @@ const DetalhesNotificacao = ({ route }: any) => {
         }
     };
 
+    // useEffect(() => {
+    //     const fetchGrupo = async () => {
+    //         try {
+    //             const fetchedGrupo = await groupService.getGroupId(route.params.grupoId);
+    //             if (fetchedGrupo) {
+    //                 setGrupo(fetchedGrupo);
+    //             } else {
+    //                 setError('Usuário não encontrado.');
+    //             }
+    //         } catch (error) {
+    //             console.error('Erro ao buscar usuário:', error);
+    //             setError('Erro ao buscar usuário. Tente novamente mais tarde.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     const fetchParticipantes = async () => {
+    //         try {
+    //             const fetchedParticipantes = await groupService.GetParticipantsByGroup(route.params.grupoId);
+    //             if (fetchedParticipantes) {
+    //                 setparticipante(fetchedParticipantes);
+    //             } else {
+    //                 setError('Participantes não encontrado.');
+    //             }
+    //         } catch (error) {
+    //             console.error('Erro ao buscar participantes:', error);
+    //             setError('Erro ao buscar usuparticipantesário. Tente novamente mais tarde.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const userDataString = await AsyncStorage.getItem('userData');
+    //             if (userDataString !== null) {
+    //                 const userData = JSON.parse(userDataString);
+    //                 setUserData(userData);
+    //             }
+    //         } catch (error) {
+    //             console.error('Erro ao recuperar dados do usuário:', error);
+    //         }
+    //     };
+
+    //     fetchGrupo();
+    //     fetchUserData();
+    //     fetchParticipantes();
+    // }, [route.params.grupoId, isFocused, navigation]);
+
     useEffect(() => {
         const fetchGrupo = async () => {
             try {
                 const fetchedGrupo = await groupService.getGroupId(route.params.grupoId);
+                console.log('Fetched Group:', fetchedGrupo); // Adicionado console.log
                 if (fetchedGrupo) {
                     setGrupo(fetchedGrupo);
                 } else {
-                    setError('Usuário não encontrado.');
+                    setError('Grupo não encontrado.');
                 }
             } catch (error) {
-                console.error('Erro ao buscar usuário:', error);
-                setError('Erro ao buscar usuário. Tente novamente mais tarde.');
+                console.error('Erro ao buscar grupo:', error);
+                setError('Erro ao buscar grupo. Tente novamente mais tarde.');
             } finally {
                 setLoading(false);
             }
         };
-
+    
         const fetchParticipantes = async () => {
             try {
                 const fetchedParticipantes = await groupService.GetParticipantsByGroup(route.params.grupoId);
+                console.log('Fetched Participants:', fetchedParticipantes); // Adicionado console.log
                 if (fetchedParticipantes) {
                     setparticipante(fetchedParticipantes);
                 } else {
-                    setError('Participantes não encontrado.');
+                    setError('Participantes não encontrados.');
                 }
             } catch (error) {
                 console.error('Erro ao buscar participantes:', error);
-                setError('Erro ao buscar usuparticipantesário. Tente novamente mais tarde.');
+                setError('Erro ao buscar participantes. Tente novamente mais tarde.');
             } finally {
                 setLoading(false);
             }
         };
-
+    
         const fetchUserData = async () => {
             try {
                 const userDataString = await AsyncStorage.getItem('userData');
                 if (userDataString !== null) {
                     const userData = JSON.parse(userDataString);
                     setUserData(userData);
+                    console.log('User Data:', userData); // Adicionado console.log
                 }
             } catch (error) {
                 console.error('Erro ao recuperar dados do usuário:', error);
             }
         };
-
+    
         fetchGrupo();
         fetchUserData();
         fetchParticipantes();
     }, [route.params.grupoId, isFocused, navigation]);
-
-    const VerificaAdministrador = () => {
-        if (userData?.id === grupo?.administrator) {
-            return (
-                <TouchableOpacity style={styles.btnEditarGrupo} onPress={() => { navigation.navigate("EditarGrupo", { grupoId: grupo?.idGroup }); }}>
-                    <Text style={styles.textbtnEditarGrupo}>Editar</Text>
-                </TouchableOpacity>
-            );
-        } else {
-            return null; // Retorna null se a condição não for verdadeira
-        }
-    };
-
-    const VerificaAdministrador2 = () => {
-        if (userData?.id === grupo?.administrator) {
-            return (
-                <View style={styles.containerAddParticipantes}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Email do Participante'
-                        onChangeText={text => setNewParticipantEmail(text)}
-                        value={newParticipantEmail}
-                    />
-                    <TouchableOpacity style={styles.btnAddParticipantes} onPress={handleAddParticipant}>
-                        <Text style={styles.textAddParticipantes}>+</Text>
-                    </TouchableOpacity>
-                </View>
-            );
-        } else {
-            return null; // Retorna null se a condição não for verdadeira
-        }
-    };
-
-    const handleAddParticipant = async () => {
-        // Verifique se o email do participante não está vazio
-        if (!newParticipantEmail.trim()) {
-            alert('Por favor, insira um email válido.');
-            return;
-        }
-
-        try {
-            // Obtenha o usuário pelo email
-            const rem: User = await userService.getUserByEmail(newParticipantEmail);
-
-            // Verifique se o usuário foi encontrado
-            if (!rem) {
-                alert('Usuário não encontrado.');
-                return;
-            }
-
-            // Extraia o ID do usuário
-            const id = rem.id ? rem.id : 0;
-
-            // Defina o ID do remetente e o ID do grupo
-            setRemetenteId(id);
-            setgrupoId(grupo?.idGroup ? grupo?.idGroup : 0);
-
-            // Crie um objeto de convite
-            const invitation: Invitation = {
-                groupId: grupoId,
-                recipientId: remetenteId,
-                senderId: userData?.id ? userData.id : 0,
-                status: 'Aceito',
-            };
-
-            // Envie o convite para o serviço
-            invitationService.createInvitation(invitation);
-
-            // Atualize a lista de participantes
-            const updatedParticipants = await groupService.GetParticipantsByGroup(route.params.grupoId);
-            setparticipante(updatedParticipants);
-
-            // Limpe o campo de email do participante
-            setNewParticipantEmail('');
-        } catch (error) {
-            console.error('Erro ao adicionar participante:', error);
-            alert('Erro ao adicionar participante. Tente novamente mais tarde.');
-        }
-    };
-
-
+    
 
     return (
         <View style={styles.container}>
             {loading ? (
-                <Text>Carregando...</Text>
+                // <Text>Carregando...</Text>
+                <View style={styles.containerCarregamento}>
+                    <ActivityIndicator size="large" color="#49708a" />
+                </View>
             ) : error ? (
                 <Text>{error}</Text>
             ) : grupo ? (
@@ -208,7 +185,6 @@ const DetalhesNotificacao = ({ route }: any) => {
                                         <Image source={grupo.icon ? { uri: `data:image/jpeg;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={[styles.icon, expanded && styles.expandedIcon]} />
                                         <Text style={styles.text}>{grupo.name}</Text>
                                         {/* <Text style={styles.text}>{`0/${grupo.maxPeople}`}</Text> */}
-                                        <VerificaAdministrador />
                                         {expanded && (
                                             <>
                                                 <View>
@@ -229,17 +205,18 @@ const DetalhesNotificacao = ({ route }: any) => {
                                     </View>
                                 </TouchableOpacity>
                                 <ScrollView style={styles.containerParticipantes} contentContainerStyle={{ justifyContent: 'center', paddingRight: 0, alignItems: 'center' }}>
-                                    <Text style={styles.titleParticipantes}>Participantes</Text>
-
-                                    <VerificaAdministrador2 />
-
-                                    {participante.map(participante => (
+                                <Text style={styles.titleParticipantes}>Participantes</Text>
+                                {participante && participante.length > 0 ? (
+                                    participante.map((participante) => (
                                         <TouchableOpacity key={participante.id} style={styles.containerMostraParticipante}>
                                             <Image source={participante.icon ? { uri: `data:image/jpeg;base64,${participante.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
                                             <Text key={participante.id}>{participante.name}</Text>
                                         </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
+                                    ))
+                                ) : (
+                                    <Text>Nenhum participante encontrado.</Text>
+                                )}
+                            </ScrollView>
                             </View>
                         )}
                         <View style={styles.container1}>
@@ -250,11 +227,11 @@ const DetalhesNotificacao = ({ route }: any) => {
                                 </View>
                             </TouchableOpacity>
                             <View style={styles.containerAceitarConvite}>
-                                <TouchableOpacity style={styles.btnSairDoGrupo} onPress={() => RecusarConvite(grupo.idGroup)}>
+                                <TouchableOpacity style={styles.btnSairDoGrupo} onPress={() => RecusarConvite(grupo.idGroup? grupo.idGroup : 0, userData?.id || 0)}>
                                     <Text style={styles.textBtnSairDoGrupo}>Recusar</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.btnAceitar} onPress={() => AceitarConvite(grupo.idGroup)}>
+                                <TouchableOpacity style={styles.btnAceitar} onPress={() => AceitarConvite(grupo.idGroup? grupo.idGroup : 0, userData?.id || 0)}>
                                     <Text style={styles.textBtnSairDoGrupo}>Aceitar</Text>
                                 </TouchableOpacity>
                             </View>
@@ -279,6 +256,12 @@ const styles = StyleSheet.create({
         width: '80%',
         alignItems: 'center',
         backgroundColor: 'white',
+    },
+
+    containerCarregamento:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     containerMostraParticipante: {
@@ -440,7 +423,7 @@ const styles = StyleSheet.create({
     btnAceitar: {
         width: '60%',
         height: 35,
-        backgroundColor: '#98A62D',
+        backgroundColor: '#4B5918',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',

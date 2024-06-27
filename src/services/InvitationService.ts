@@ -42,13 +42,13 @@ class InvitationService {
     }
   }
 
-  async updateStatus(invitationId: number, newStatus: string): Promise<boolean> {
+  async updateStatus(groupId: number, newStatus: string, recipientId: number): Promise<boolean> {
     try {
         const formData = new FormData();
-        formData.append('invitationId', invitationId.toString());
         formData.append('status', newStatus);
+        formData.append('recipientId', recipientId.toString());
 
-        const updateResponse = await axios.put(BASE_URL + `updateInvitationStatus/${invitationId}`, formData, {
+        const updateResponse = await axios.put(BASE_URL + `UpdateInvitationStatus/${groupId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -66,6 +66,7 @@ class InvitationService {
         return false;
     }
 }
+
 }
 
 export default InvitationService;
