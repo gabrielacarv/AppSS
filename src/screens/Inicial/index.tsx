@@ -15,23 +15,7 @@ const Inicial = () => {
   const isFocused = useIsFocused();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [grupos, setGrupos] = useState<Group[]>([]);
-
-  // useEffect(() => {
-  //   const loadFonts = async () => {
-  //     try {
-  //       await useFonts({
-  //         Poppins_400Regular,
-  //         Poppins_700Bold,
-  //       });
-  //       setFontsLoaded(true);
-  //     } catch (error) {
-  //       console.error('Erro ao carregar as fontes:', error);
-  //     }
-  //   };
-
-  //   loadFonts();
-  // }, []);
-  const [userData, setUserData] = useState<User | null>(null); // fornecer um tipo explícito para userData
+  const [userData, setUserData] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchGrupos = async () => {
@@ -42,7 +26,7 @@ const Inicial = () => {
           const parsedUserData = JSON.parse(userDataString);
           setUserData(parsedUserData);
 
-          if (parsedUserData.id) { // Verifica se id está definido
+          if (parsedUserData.id) {
             const response = await fetch(BASE_URL + parsedUserData.id);
 
             if (!response.ok) {
@@ -62,10 +46,6 @@ const Inicial = () => {
   }, [isFocused, navigation]);
 
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-
   return (
 
     <View style={styles.containerGeral}>
@@ -77,12 +57,11 @@ const Inicial = () => {
         </View>
         <View style={styles.containerBtnPefilUsuario}>
           <TouchableOpacity style={styles.btnPerfilUsuario} onPress={() => { navigation.navigate("Perfil"); }}>
-            {/* <Text style={styles.btnCriarGrupoText}>Perfil</Text> */}
-            <Image source={require('../../../assets/images/perfil.png')} style={styles.image}/>
+            <Image source={require('../../../assets/images/perfil.png')} style={styles.image} />
           </TouchableOpacity>
         </View>
       </View>
-      
+
       <SafeAreaView style={styles.container}>
 
         <Text style={styles.title}>Grupos</Text>
@@ -99,7 +78,6 @@ const Inicial = () => {
                 <Image source={grupo.icon ? { uri: `data:image;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
                 <Text style={styles.Text}>{grupo.name}</Text>
               </View>
-              {/* <Text style={styles.Text}>{`0/${grupo.maxPeople}`}</Text> */}
             </TouchableOpacity>
 
           ))}
@@ -113,10 +91,9 @@ const Inicial = () => {
 
 const styles = StyleSheet.create({
   image: {
-    width: 24, // Ajuste conforme necessário
-    height: 24, // Ajuste conforme necessário
-    // Outros estilos para a imagem
-},
+    width: 24,
+    height: 24,
+  },
   containerGeral: {
     flex: 1,
     backgroundColor: 'white',
@@ -129,11 +106,8 @@ const styles = StyleSheet.create({
   },
 
   container1: {
-    // flex: 1,
     width: '100%',
     maxHeight: '70%',
-    // justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: 'white',
   },
 
@@ -168,28 +142,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 
-  // input: {
-  //   width: '80%',
-  //   height: 40,
-  //   borderColor: '#49708a',
-  //   borderWidth: 1,
-  //   borderRadius: 8,
-  //   marginBottom: 20,
-  //   paddingHorizontal: 10,
-  // },
-
-  // button: {
-  //   width: '80%',
-  //   height: 40,
-  //   borderRadius: 8,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   borderWidth: 1,
-  //   borderColor: '#a1e000',
-  //   backgroundColor: '#a1e000',
-  //   marginBottom: 15,
-  // },
-
   buttonText: {
     color: '#ebf7f8',
     fontSize: 16,
@@ -213,7 +165,6 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     paddingLeft: 30,
     justifyContent: 'space-between',
-    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F29422',
     borderRadius: 10,
@@ -240,7 +191,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#a1e000',
     borderRadius: 5,
-    // padding: 10,
   },
 
   btnCriarGrupo: {

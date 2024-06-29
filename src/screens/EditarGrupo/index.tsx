@@ -104,18 +104,17 @@ const EditarGrupo = ({ route }: any) => {
 
     const handleDelete = async () => {
         if (grupo?.idGroup) {
-          const result = await groupService.deleteGroup(grupo.idGroup);
-          if (result) {
-            alert('Grupo excluído com sucesso.');
-            navigation.navigate('Inicial');
-          } else {
-            alert('Erro ao excluir o grupo.');
-          }
+            const result = await groupService.deleteGroup(grupo.idGroup);
+            if (result) {
+                alert('Grupo excluído com sucesso.');
+                navigation.navigate('Inicial');
+            } else {
+                alert('Erro ao excluir o grupo.');
+            }
         }
-      };
+    };
 
     const isValidDate = (dateString: string): boolean => {
-        // Expressão regular para validar a data no formato 'DD/MM/YYYY'
         const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
         return dateRegex.test(dateString);
     };
@@ -149,41 +148,20 @@ const EditarGrupo = ({ route }: any) => {
                             onChangeText={(text) => setGrupo({ ...grupo, maxPeople: parseInt(text) || 0 })}
                         />
 
-                        {/* <TextInput
-                            style={[styles.input, !editable && styles.readOnly]}
-                            placeholder="Data Revelação"
-                            // value={grupo && grupo.disclosureDate instanceof Date ? grupo.disclosureDate.toDateString() : ''}
-                            value={grupo && typeof grupo.disclosureDate === 'string' ? new Date(grupo.disclosureDate).toDateString() : ''}
-                            editable={editable}
-                        /> */}
-
-                        {/* <TextInput
-                            style={[styles.input, !editable && styles.readOnly]}
-                            placeholder="Data Revelação"
-                            value={grupo && typeof grupo.disclosureDate === 'string' ? new Date(grupo.disclosureDate).toLocaleDateString('pt-BR') : ''}
-                            editable={editable}
-                            onChangeText={handleDataChange}
-                        /> */}
-
                         <TextInputMask
                             style={[styles.input, !editable && styles.readOnly]}
                             placeholder="Data Revelação"
-                            value={inputValue} // Usa o valor do estado local como o valor do TextInput
+                            value={inputValue}
                             editable={editable}
-                            // onChangeText={handleDataChange } // Define o manipulador de eventos para lidar com mudanças no texto
-                            // onChangeText={(text) => {
-                            //     setInputValue(text); // Atualiza o estado local com o novo valor do texto
-                            //     const date = new Date(text); // Converte a string para um objeto Date
-                            //     setGrupo({ ...grupo, disclosureDate: date }); // Atualiza o estado do grupo com a nova data
-                            // }}
+
                             onChangeText={(text) => {
-                                setInputValue(text); // Atualiza o estado local com o novo valor do texto
+                                setInputValue(text);
                                 if (isValidDate(text)) {
                                     const [day, month, year] = text.split('/').map(Number);
-                                    const date = new Date(year, month - 1, day); // Mês é baseado em zero, então subtraímos 1
-                                    setGrupo({ ...grupo, disclosureDate: date }); // Atualiza o estado do grupo com a nova data
+                                    const date = new Date(year, month - 1, day);
+                                    setGrupo({ ...grupo, disclosureDate: date });
                                 } else {
-                                    // Tratar caso de data inválida
+
                                 }
                             }}
                             type={'datetime'}
@@ -191,22 +169,6 @@ const EditarGrupo = ({ route }: any) => {
                                 format: 'DD/MM/YYYY',
                             }}
                         />
-
-                        {/* <TextInputMask
-                            style={[styles.input, !editable && styles.readOnly]}
-                            placeholder="Data Revelação"
-                            value={inputValue}
-                            editable={editable}
-                            onChangeText={(text) => {
-                                setInputValue(text); // Atualiza o estado local com o novo valor do texto
-                                const date = new Date(text); // Converte a string para um objeto Date
-                                setGrupo({ ...grupo, disclosureDate: date }); // Atualiza o estado do grupo com a nova data
-                            }}
-                            type={'datetime'}
-                            options={{
-                                format: 'DD/MM/YYYY',
-                            }}
-                        /> */}
 
                         <TextInput
                             style={[styles.input, !editable && styles.readOnly]}
@@ -230,16 +192,10 @@ const EditarGrupo = ({ route }: any) => {
                 )}
 
                 {editable ? (
-                    // Botão para confirmar as alterações quando estiver em modo de edição
                     <TouchableOpacity style={styles.btnConfirmar} onPress={handleConfirm}>
                         <Text style={styles.textbtnEditar}>Confirmar</Text>
                     </TouchableOpacity>
                 ) : (
-                    // Botão para iniciar a edição dos campos
-                    // <TouchableOpacity onPress={handleEdit}>
-                    //     <Text>Editar</Text>
-                    // </TouchableOpacity>
-                    // <View style={styles.containerFormulario2}>
                     <View style={styles.containerFormulario2}>
                         <TouchableOpacity style={styles.btnEditar} onPress={handleEdit}>
                             <Text style={styles.textbtnEditar}>Editar</Text>
@@ -277,16 +233,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#ffffff',
-        // borderRadius: 8,
         width: '90%',
-        // padding: 20,
-        // margin: 15,
     },
 
     btnConfirmar: {
         width: '50%',
         height: 25,
-        // backgroundColor: '#F2441D',
         backgroundColor: '#98A62D',
         borderRadius: 10,
         justifyContent: 'center',
@@ -299,7 +251,6 @@ const styles = StyleSheet.create({
     btnEditar: {
         width: '50%',
         height: 25,
-        // backgroundColor: '#F2441D',
         backgroundColor: '#f2a622',
         borderRadius: 10,
         justifyContent: 'center',
@@ -450,9 +401,8 @@ const styles = StyleSheet.create({
     },
 
     readOnly: {
-        // Estilos para os campos em modo de leitura (não editáveis)
-        backgroundColor: '#f2f2f2', // Um fundo cinza claro
-        color: 'gray', // Texto cinza
+        backgroundColor: '#f2f2f2',
+        color: 'gray',
     },
 });
 

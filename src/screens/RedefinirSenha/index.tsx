@@ -19,7 +19,7 @@ const RedefinirSenha = () => {
     const [senha, setSenha] = useState('');
     const [senhaN, setSenhaN] = useState('');
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
+    const [loading, setLoading] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
     const [usernameError, setUsernameError] = useState(false);
 
@@ -36,7 +36,7 @@ const RedefinirSenha = () => {
         const hasNumber = /\d/;
         const hasLetter = /[a-zA-Z]/;
         return password.length >= 8 && hasNumber.test(password) && hasLetter.test(password);
-      };
+    };
 
     const handleSubmit = async () => {
         if (senha !== senhaN) {
@@ -50,15 +50,15 @@ const RedefinirSenha = () => {
         if (!validatePassword(senha)) {
             alert('A senha deve ter pelo menos 8 caracteres, contendo letras e números.');
             return;
-          }
+        }
 
-        setLoading(true); // Ativa a animação de carregamento
-        
+        setLoading(true);
+
         try {
             const reset: ResetPassword = {
                 token: token,
                 password: senha,
-              };
+            };
             const response = await userService.resetPassword(reset)
             if (response) {
                 alert('Senha redefinida com sucesso!');
@@ -70,7 +70,7 @@ const RedefinirSenha = () => {
             console.error('Erro ao redefinir senha:', error);
             alert('Erro ao redefinir senha.');
         } finally {
-            setLoading(false); // Desativa a animação de carregamento após o processamento
+            setLoading(false);
         }
     };
 
@@ -79,44 +79,30 @@ const RedefinirSenha = () => {
         <View style={styles.container}>
             <Text style={styles.title}>Redefinir Senha</Text>
 
-            {/* <TextInput
-                style={styles.input}
-                placeholder='Senha'
-                value={senha}
-                onChangeText={setSenha}
-            /> */}
-
             <View style={styles.passwordContainer}>
-            <TextInput
-                style={[ usernameError && styles.errorInput, { flex: 1 }]}
-                placeholder='Senha'
-                secureTextEntry={!passwordVisible}
-                onChangeText={setSenha}
-                value={senha}
-            />
-            <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-                <Icon name={passwordVisible ? "eye-off" : "eye"} size={24} color="grey" />
-            </TouchableOpacity>
+                <TextInput
+                    style={[usernameError && styles.errorInput, { flex: 1 }]}
+                    placeholder='Senha'
+                    secureTextEntry={!passwordVisible}
+                    onChangeText={setSenha}
+                    value={senha}
+                />
+                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+                    <Icon name={passwordVisible ? "eye-off" : "eye"} size={24} color="grey" />
+                </TouchableOpacity>
             </View>
 
-            {/* <TextInput
-                style={styles.input}
-                placeholder='Senha novamente'
-                value={senhaN}
-                onChangeText={setSenhaN}
-            />     */}
-
             <View style={styles.passwordContainer}>
-            <TextInput
-                style={[ usernameError && styles.errorInput, { flex: 1 }]}
-                placeholder='Senha'
-                secureTextEntry={!passwordVisible}
-                onChangeText={setSenhaN}
-                value={senhaN}
-            />
-            <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-                <Icon name={passwordVisible ? "eye-off" : "eye"} size={24} color="grey" />
-            </TouchableOpacity>
+                <TextInput
+                    style={[usernameError && styles.errorInput, { flex: 1 }]}
+                    placeholder='Senha'
+                    secureTextEntry={!passwordVisible}
+                    onChangeText={setSenhaN}
+                    value={senhaN}
+                />
+                <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+                    <Icon name={passwordVisible ? "eye-off" : "eye"} size={24} color="grey" />
+                </TouchableOpacity>
             </View>
 
             <TextInput
@@ -125,15 +111,11 @@ const RedefinirSenha = () => {
                 placeholder='Cole o token aqui'
                 value={token}
                 onChangeText={setToken}
-            />  
-
-            {/* <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Redefinir</Text>
-            </TouchableOpacity> */}
+            />
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
                 {loading ? (
-                    <ActivityIndicator size='small' color='#ffffff' /> // Mostra a animação de carregamento se estiver carregando
+                    <ActivityIndicator size='small' color='#ffffff' />
                 ) : (
                     <Text style={styles.buttonText}>Redefinir</Text>
                 )}
@@ -162,7 +144,7 @@ const styles = StyleSheet.create({
     },
     errorInput: {
         borderColor: 'red',
-      },
+    },
 
     input: {
         width: '80%',
@@ -174,7 +156,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#f0f0f0',
     },
-                                                                                                                                                                                                    
+
     inputToken: {
         width: '80%',
         maxHeight: 150,
@@ -198,7 +180,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
         flexDirection: 'row',
         alignItems: 'center',
-      },
+    },
 
     button: {
         width: '80%',

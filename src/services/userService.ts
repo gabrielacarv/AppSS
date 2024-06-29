@@ -8,18 +8,8 @@ const BASE_URL = 'https://localhost:7186/api/User/'
 class UserService {
 
   constructor() {
-    // Se necessário, adicione inicializações aqui
   }
 
-  // async addUser(user: User): Promise<boolean> {
-  //   try {
-  //     const response = await axios.post(`${BASE_URL}`, user);
-  //     return response.status === 201; // Retorna true se o usuário foi adicionado com sucesso
-  //   } catch (error) {
-  //     console.error('Erro ao adicionar usuário:', error);
-  //     return false; // Retorna false em caso de erro
-  //   }
-  // }
 
   async getUserById(userId: number): Promise<User | null> {
     try {
@@ -33,7 +23,6 @@ class UserService {
 
   async addUser(user: User): Promise<boolean> {
     try {
-      //  const response = await axios.post(`${BASE_URL}`, user);
 
       const formData = new FormData();
       formData.append('name', user.name);
@@ -99,40 +88,6 @@ class UserService {
     }
   }
 
-
-  // async validateUser(username: string, password: string): Promise<boolean> {
-  //   try {
-  //     const response: AxiosResponse<User[]> = await axios.get(`${BASE_URL}?username=${username}&password=${password}`);
-  //     //na aplicação de vocês não retorna array não e o metodo sera um post que retorna um unico usuario.
-  //     if (response.data.length === 0) {
-  //       return false;
-  //     }
-
-  //     return response.status === 200;
-  //   } catch (error) {
-  //     console.error('Erro ao validar usuário:', error);
-  //     return false; // Retorna false em caso de erro
-  //   }
-  // }
-
-  //   async validateUser(email: string, password: string): Promise<boolean> {
-  //     try {
-  //         const response: AxiosResponse<{ token: string }> = await axios.post(`${BASE_URL}Login`, {
-  //             email: email,
-  //             password: password
-  //         });
-
-  //         if (response.status === 200 && response.data.token) {
-  //             return true;
-  //         } else {
-  //             return false;
-  //         }
-  //     } catch (error) {
-  //         console.error('Erro ao validar usuário:', error);
-  //         return false; // Retorna false em caso de erro
-  //     }
-  // }
-
   async validateUser(email: string, password: string): Promise<User | null> {
     try {
       const response: AxiosResponse<{ token: string }> = await axios.post(`${BASE_URL}Login`, {
@@ -141,20 +96,19 @@ class UserService {
       });
 
       if (response.status === 200 && response.data.token) {
-        // Se a autenticação for bem-sucedida, faça outra solicitação para obter os dados do usuário
         const userResponse: AxiosResponse<User> = await axios.get(`${BASE_URL}UserByEmail/${email}`, {
           headers: {
             Authorization: `Bearer ${response.data.token}`
           }
         });
 
-        return userResponse.data; // Retorna os dados do usuário
+        return userResponse.data;
       } else {
-        return null; // Retorna null se a autenticação falhar
+        return null;
       }
     } catch (error) {
       console.error('Erro ao validar usuário:', error);
-      return null; // Retorna null em caso de erro
+      return null; 
     }
   }
 
@@ -172,13 +126,10 @@ class UserService {
     try {
       const response = await axios.get(`${BASE_URL}UserByEmail/${email}`);
 
-      // Axios não possui uma propriedade 'ok', verifique o status diretamente
       if (response.status !== 200) {
-        // Se a resposta não estiver ok, lança um erro
         throw new Error('Erro ao obter usuário');
       }
 
-      // O resultado está disponível diretamente na propriedade 'data'
       const user = response.data;
       return user;
     } catch (error) {
@@ -201,7 +152,7 @@ class UserService {
     try {
       const formData = new FormData();
       formData.append('token', reset.token);
-      formData.append('password', reset.password); // Certifique-se de usar o nome correto conforme esperado pelo backend
+      formData.append('password', reset.password);
 
       const uploadResponse = await axios.post(BASE_URL + 'ResetPassword', formData, {
         headers: {
@@ -209,7 +160,7 @@ class UserService {
         },
       });
 
-      return uploadResponse.status === 200; // Verifique a variável correta
+      return uploadResponse.status === 200;
     } catch (error) {
       console.error('Erro ao resetar senha:', error);
       return false;

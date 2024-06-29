@@ -61,61 +61,11 @@ const DetalhesNotificacao = ({ route }: any) => {
         }
     };
 
-    // useEffect(() => {
-    //     const fetchGrupo = async () => {
-    //         try {
-    //             const fetchedGrupo = await groupService.getGroupId(route.params.grupoId);
-    //             if (fetchedGrupo) {
-    //                 setGrupo(fetchedGrupo);
-    //             } else {
-    //                 setError('Usuário não encontrado.');
-    //             }
-    //         } catch (error) {
-    //             console.error('Erro ao buscar usuário:', error);
-    //             setError('Erro ao buscar usuário. Tente novamente mais tarde.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     const fetchParticipantes = async () => {
-    //         try {
-    //             const fetchedParticipantes = await groupService.GetParticipantsByGroup(route.params.grupoId);
-    //             if (fetchedParticipantes) {
-    //                 setparticipante(fetchedParticipantes);
-    //             } else {
-    //                 setError('Participantes não encontrado.');
-    //             }
-    //         } catch (error) {
-    //             console.error('Erro ao buscar participantes:', error);
-    //             setError('Erro ao buscar usuparticipantesário. Tente novamente mais tarde.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const userDataString = await AsyncStorage.getItem('userData');
-    //             if (userDataString !== null) {
-    //                 const userData = JSON.parse(userDataString);
-    //                 setUserData(userData);
-    //             }
-    //         } catch (error) {
-    //             console.error('Erro ao recuperar dados do usuário:', error);
-    //         }
-    //     };
-
-    //     fetchGrupo();
-    //     fetchUserData();
-    //     fetchParticipantes();
-    // }, [route.params.grupoId, isFocused, navigation]);
-
     useEffect(() => {
         const fetchGrupo = async () => {
             try {
                 const fetchedGrupo = await groupService.getGroupId(route.params.grupoId);
-                console.log('Fetched Group:', fetchedGrupo); // Adicionado console.log
+                console.log('Fetched Group:', fetchedGrupo);
                 if (fetchedGrupo) {
                     setGrupo(fetchedGrupo);
                 } else {
@@ -128,11 +78,11 @@ const DetalhesNotificacao = ({ route }: any) => {
                 setLoading(false);
             }
         };
-    
+
         const fetchParticipantes = async () => {
             try {
                 const fetchedParticipantes = await groupService.GetParticipantsByGroup(route.params.grupoId);
-                console.log('Fetched Participants:', fetchedParticipantes); // Adicionado console.log
+                console.log('Fetched Participants:', fetchedParticipantes);
                 if (fetchedParticipantes) {
                     setparticipante(fetchedParticipantes);
                 } else {
@@ -145,30 +95,29 @@ const DetalhesNotificacao = ({ route }: any) => {
                 setLoading(false);
             }
         };
-    
+
         const fetchUserData = async () => {
             try {
                 const userDataString = await AsyncStorage.getItem('userData');
                 if (userDataString !== null) {
                     const userData = JSON.parse(userDataString);
                     setUserData(userData);
-                    console.log('User Data:', userData); // Adicionado console.log
+                    console.log('User Data:', userData);
                 }
             } catch (error) {
                 console.error('Erro ao recuperar dados do usuário:', error);
             }
         };
-    
+
         fetchGrupo();
         fetchUserData();
         fetchParticipantes();
     }, [route.params.grupoId, isFocused, navigation]);
-    
+
 
     return (
         <View style={styles.container}>
             {loading ? (
-                // <Text>Carregando...</Text>
                 <View style={styles.containerCarregamento}>
                     <ActivityIndicator size="large" color="#49708a" />
                 </View>
@@ -184,7 +133,6 @@ const DetalhesNotificacao = ({ route }: any) => {
                                     <View style={[styles.infoPrincipalGrupo, expanded && styles.expandedInfoPrincipalGrupo]} >
                                         <Image source={grupo.icon ? { uri: `data:image/jpeg;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={[styles.icon, expanded && styles.expandedIcon]} />
                                         <Text style={styles.text}>{grupo.name}</Text>
-                                        {/* <Text style={styles.text}>{`0/${grupo.maxPeople}`}</Text> */}
                                         {expanded && (
                                             <>
                                                 <View>
@@ -205,18 +153,18 @@ const DetalhesNotificacao = ({ route }: any) => {
                                     </View>
                                 </TouchableOpacity>
                                 <ScrollView style={styles.containerParticipantes} contentContainerStyle={{ justifyContent: 'center', paddingRight: 0, alignItems: 'center' }}>
-                                <Text style={styles.titleParticipantes}>Participantes</Text>
-                                {participante && participante.length > 0 ? (
-                                    participante.map((participante) => (
-                                        <TouchableOpacity key={participante.id} style={styles.containerMostraParticipante}>
-                                            <Image source={participante.icon ? { uri: `data:image/jpeg;base64,${participante.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
-                                            <Text key={participante.id}>{participante.name}</Text>
-                                        </TouchableOpacity>
-                                    ))
-                                ) : (
-                                    <Text>Nenhum participante encontrado.</Text>
-                                )}
-                            </ScrollView>
+                                    <Text style={styles.titleParticipantes}>Participantes</Text>
+                                    {participante && participante.length > 0 ? (
+                                        participante.map((participante) => (
+                                            <TouchableOpacity key={participante.id} style={styles.containerMostraParticipante}>
+                                                <Image source={participante.icon ? { uri: `data:image/jpeg;base64,${participante.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.icon} />
+                                                <Text key={participante.id}>{participante.name}</Text>
+                                            </TouchableOpacity>
+                                        ))
+                                    ) : (
+                                        <Text>Nenhum participante encontrado.</Text>
+                                    )}
+                                </ScrollView>
                             </View>
                         )}
                         <View style={styles.container1}>
@@ -227,11 +175,11 @@ const DetalhesNotificacao = ({ route }: any) => {
                                 </View>
                             </TouchableOpacity>
                             <View style={styles.containerAceitarConvite}>
-                                <TouchableOpacity style={styles.btnSairDoGrupo} onPress={() => RecusarConvite(grupo.idGroup? grupo.idGroup : 0, userData?.id || 0)}>
+                                <TouchableOpacity style={styles.btnSairDoGrupo} onPress={() => RecusarConvite(grupo.idGroup ? grupo.idGroup : 0, userData?.id || 0)}>
                                     <Text style={styles.textBtnSairDoGrupo}>Recusar</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.btnAceitar} onPress={() => AceitarConvite(grupo.idGroup? grupo.idGroup : 0, userData?.id || 0)}>
+                                <TouchableOpacity style={styles.btnAceitar} onPress={() => AceitarConvite(grupo.idGroup ? grupo.idGroup : 0, userData?.id || 0)}>
                                     <Text style={styles.textBtnSairDoGrupo}>Aceitar</Text>
                                 </TouchableOpacity>
                             </View>
@@ -258,7 +206,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
 
-    containerCarregamento:{
+    containerCarregamento: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -288,7 +236,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#98A62D',
         minWidth: '90%',
         maxHeight: '70%',
-        // alignItems: 'center',
         padding: 20,
         borderRadius: 10,
         marginBottom: 10,
@@ -297,8 +244,6 @@ const styles = StyleSheet.create({
     containerGrupo: {
         width: '90%',
         height: 70,
-        // paddingRight: 30,
-        // paddingLeft: 30,
         justifyContent: 'space-around',
         alignItems: 'center',
         backgroundColor: '#98A62D',
@@ -357,7 +302,6 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         borderColor: '#a1e000',
         borderRadius: 10,
-        // padding: 10,
     },
 
     expandedIcon: {
@@ -398,7 +342,6 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontFamily: 'Poppins_400Regular',
         textAlign: 'justify',
-        // backgroundColor: '#f0f0f0',
         borderRadius: 10,
         padding: 5,
         borderColor: '#f0f0f0',
@@ -432,7 +375,6 @@ const styles = StyleSheet.create({
     btnEditarGrupo: {
         width: '30%',
         height: 20,
-        // backgroundColor: '#F2441D',
         backgroundColor: '#F29422',
         borderRadius: 10,
         justifyContent: 'center',

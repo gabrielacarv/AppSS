@@ -112,7 +112,7 @@ const StackComponent = () => (
       />
       <Stack.Screen
         name="Inicial"
-        component={Inicial} // Componente do TabNavigator
+        component={Inicial}
         options={({ route, navigation }) => ({
           headerTitle: '',
           headerStyle: {
@@ -217,12 +217,5 @@ const StackComponent = () => (
     </Stack.Navigator>
   </NavigationContainer>
 );
-
-// const TabNavigator = () => (
-//   <Tab.Navigator>
-//     <Tab.Screen name="Inicial" component={Inicial} />
-//     <Tab.Screen name="CriarGrupo" component={CriarGrupo} />
-//   </Tab.Navigator>
-// );
 
 export default StackComponent;

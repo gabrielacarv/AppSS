@@ -6,115 +6,18 @@ import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-font
 import UserService from '../../services/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../../types/types';
+import Icon from 'react-native-vector-icons/Feather';
 
 
-// const Perfil = () => {
-//     const [userData, setUserData] = useState<User | null>(null); // fornecer um tipo explícito para userData
-
-//     useEffect(() => {
-//         const fetchUserData = async () => {
-//           try {
-//             const userDataString = await AsyncStorage.getItem('userData');
-//             if (userDataString !== null) {
-//               setUserData(JSON.parse(userDataString));
-//             }
-//           } catch (error) {
-//             console.error('Erro ao recuperar dados do usuário:', error);
-//           }
-//         };
-
-//         fetchUserData();
-//       }, []);
-
-//     return (
-//         <View style={styles.container}>
-//             <Text style={styles.title}>Perfil</Text>
-
-//             <View style={styles.containerFormulario}>
-//                 {/* <Image source={require('../../../assets/images/perfil.png')} style={styles.imageLogo} /> */}
-//                 <Image source={userData?.photo? { uri: `data:image/jpeg;base64,${userData?.photo}` } : require('../../../assets/images/Perfil_Grupo.png')}style={styles.imageLogo} />
-
-//                 <TouchableOpacity>
-//                     <Text>Alterar Imagem</Text>
-//                 </TouchableOpacity>
-
-//                 {userData ? (
-//                     <View style={styles.containerFormulario2}>
-//                         <TextInput
-//                             style={styles.input}
-//                             placeholder='Nome'
-//                             value={userData.name}
-//                             readOnly
-//                         />
-
-//                         <TextInput
-//                             style={styles.input}
-//                             placeholder='E-mail'
-//                             value={userData.email}
-//                             readOnly
-//                         />
-
-//                         <TextInput
-//                             style={styles.input}
-//                             placeholder='Senha'
-//                             value={userData.password}
-//                             secureTextEntry={true}
-//                             readOnly
-//                         />
-//                     </View>
-//                 ) : (
-//                     <Text>Nenhum usuário logado</Text>
-//                 )}
-
-//                 <TouchableOpacity>
-//                     <Text>Editar</Text>
-//                 </TouchableOpacity>
-//             </View>
-//         </View>
-
-//     );
-// };
 const Perfil = () => {
   const [userData, setUserData] = useState<User | null>(null);
-  const [editable, setEditable] = useState<boolean>(false); // Adicionando estado para controlar a edição dos campos
+  const [editable, setEditable] = useState<boolean>(false);
   const [nome, setNome] = useState<string>('');
   const userService = new UserService();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const navigation = useNavigation<StackTypes>();
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const userDataString = await AsyncStorage.getItem('userData');
-  //       if (userDataString !== null) {
-  //         setUserData(JSON.parse(userDataString));
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao recuperar dados do usuário:', error);
-  //     }
-  //   };
-  //   fetchUserData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const userDataString = await AsyncStorage.getItem('userData');
-  //       if (userDataString !== null) {
-  //         const userData = JSON.parse(userDataString);
-  //         setUserData(userData);
-  //         const userImage = await userService.getUserImage(10);
-  //         if (userImage) {
-  //           setImageUri(userImage.imageData); // Supondo que o objeto UserImage tenha uma propriedade 'url' que contenha o URL da imagem
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao recuperar dados do usuário:', error);
-  //     }
-  //   };
-  //   fetchUserData();
-  //   loadUserImage();
-  // }, []);
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -123,9 +26,9 @@ const Perfil = () => {
         if (userDataString !== null) {
           const userData = JSON.parse(userDataString);
           setUserData(userData);
-          const response = await userService.getUserImage(userData.id); // Verifique se o ID do usuário está correto
+          const response = await userService.getUserImage(userData.id);
           if (response && response.imageUrl) {
-            setImageUri(response.imageUrl); // Use a propriedade correta 'ImageUrl'
+            setImageUri(response.imageUrl);
           } else {
             console.error('Resposta inválida ou URL da imagem não fornecida.');
           }
@@ -135,7 +38,7 @@ const Perfil = () => {
       }
     };
     fetchUserData();
-  }, []);
+  }, [navigation]);
 
 
   const handleEdit = () => {
@@ -191,32 +94,35 @@ const Perfil = () => {
               editable={editable}
             />
 
-            <TextInput
-              style={[styles.input, !editable && styles.readOnly]}
-              placeholder="Senha"
-              value={userData.password}
-              secureTextEntry={true}
-              editable={editable}
-            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.input, !editable && styles.readOnly, { flex: 1 }]}
+                placeholder='Senha'
+                secureTextEntry={!passwordVisible}
+                value={userData.password}
+              />
+              <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+                <Icon name={passwordVisible ? "eye-off" : "eye"} size={24} color="grey" />
+              </TouchableOpacity>
+            </View>
           </View>
+
         ) : (
           <Text>Nenhum usuário logado</Text>
         )}
 
         {editable ? (
-          // Botão para confirmar as alterações quando estiver em modo de edição
-          <TouchableOpacity onPress={handleConfirm}>
-            <Text>Confirmar</Text>
+          <TouchableOpacity style={styles.btnConfirmar} onPress={handleConfirm}>
+            <Text style={styles.textbtnEditar}>Confirmar</Text>
           </TouchableOpacity>
         ) : (
-          // Botão para iniciar a edição dos campos
 
           <View style={styles.containerFormulario2}>
             <TouchableOpacity style={styles.btnEditar} onPress={handleEdit}>
               <Text style={styles.textbtnEditar}>Editar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btnSair} onPress={() => {navigation.navigate('Login');}}>
+            <TouchableOpacity style={styles.btnSair} onPress={() => { navigation.navigate('Login'); }}>
               <Text style={styles.textBtnSair}>Sair</Text>
             </TouchableOpacity>
           </View>
@@ -235,6 +141,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2601d',
   },
 
+  passwordContainer: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#f0f0f0',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  errorInput: {
+    borderColor: 'red',
+  },
+
   containerFormulario: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -249,10 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    // borderRadius: 8,
     width: '90%',
-    // padding: 20,
-    // margin: 15,
   },
 
   title: {
@@ -263,7 +183,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    width: '95%',
+    width: '100%',
     height: 40,
     borderColor: '#49708a',
     borderWidth: 0,
@@ -316,7 +236,6 @@ const styles = StyleSheet.create({
   btnEditarImagem: {
     width: '50%',
     height: 25,
-    // backgroundColor: '#F2441D',
     backgroundColor: '#F29422',
     borderRadius: 10,
     justifyContent: 'center',
@@ -328,8 +247,18 @@ const styles = StyleSheet.create({
   btnEditar: {
     width: '50%',
     height: 25,
-    // backgroundColor: '#F2441D',
     backgroundColor: '#F29422',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    marginBottom: 20
+  },
+
+  btnConfirmar: {
+    width: '50%',
+    height: 25,
+    backgroundColor: '#4B5918',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -409,9 +338,8 @@ const styles = StyleSheet.create({
   },
 
   readOnly: {
-    // Estilos para os campos em modo de leitura (não editáveis)
-    backgroundColor: '#f2f2f2', // Um fundo cinza claro
-    color: 'gray', // Texto cinza
+    backgroundColor: '#f2f2f2',
+    color: 'gray',
   },
 });
 

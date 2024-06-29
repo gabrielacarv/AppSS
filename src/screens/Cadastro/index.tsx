@@ -102,8 +102,6 @@ const Cadastro = () => {
 
       <View style={styles.containerFormulario}>
 
-        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '80%',height: 100, borderRadius: 50}}> */}
-        {/* {image && <Image source={{ uri: image }} style={styles.imgPerfil} />} */}
         <Image source={image ? { uri: image } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.imgPerfil} />
 
 
@@ -112,7 +110,6 @@ const Cadastro = () => {
         </TouchableOpacity>
 
 
-        {/* <Text style={styles.labelText}>Nome</Text> */}
         <TextInput
           style={styles.input}
           placeholder='Nome Completo'
@@ -120,7 +117,6 @@ const Cadastro = () => {
           value={name}
         />
 
-        {/* <Text style={styles.labelText}>E-mail</Text> */}
         <TextInput
           style={styles.input}
           placeholder='E-mail'
@@ -129,7 +125,6 @@ const Cadastro = () => {
           keyboardType="email-address"
         />
 
-        {/* <Text style={styles.labelText}>Senha</Text> */}
         <TextInput
           style={styles.input}
           placeholder='Senha'
@@ -138,7 +133,6 @@ const Cadastro = () => {
           value={password}
         />
 
-        {/* <Text style={styles.labelText}>Confirmar Senha</Text> */}
         <TextInput
           style={styles.input}
           placeholder='Confirmar senha'

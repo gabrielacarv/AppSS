@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button, TextInput, Touchable, TouchableOpacity } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,7 @@ const EsqueceuSenha = () => {
   const userService = new UserService();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
+  const [loading, setLoading] = useState(false);
 
 
   const [fontsLoaded] = useFonts({
@@ -24,44 +24,35 @@ const EsqueceuSenha = () => {
   });
 
   useEffect(() => {
-    setLoading(false); // Garante que o estado de carregamento está inicializado como falso
-}, []);
+    setLoading(false);
+  }, []);
 
   if (!fontsLoaded) {
     return null;
   }
 
   const handleSubmit = async () => {
-    setLoading(true); // Ativa a animação de carregamento ao iniciar o envio do email
+    setLoading(true);
     try {
       const response = await userService.requestPasswordReset(email);
       if (response) {
-          alert('Email de recuperação enviado. Verifique sua caixa de entrada.');
-          // setTimeout(() => {
-          //     navigation.navigate('RedefinirSenha');
-          // }, 3000);
-          navigation.navigate('RedefinirSenha');
+        alert('Email de recuperação enviado. Verifique sua caixa de entrada.');
+        navigation.navigate('RedefinirSenha');
       } else {
-          setMessage('Erro ao enviar email de recuperação.');
+        setMessage('Erro ao enviar email de recuperação.');
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Erro ao enviar email de recuperação:', error);
       alert('Erro ao enviar email de recuperação.');
-  } finally {
-      setLoading(false); // Desativa a animação de carregamento após o envio do email
-  }
+    } finally {
+      setLoading(false);
+    }
   };
-  
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recuperar Conta</Text>
-
-      {/* <Text style={styles.labelText}>E-mail</Text> */}
-      {/* <TextInput
-        style={styles.input}
-        placeholder='E-mail'
-      /> */}
 
       <TextInput
         style={styles.input}
@@ -72,17 +63,13 @@ const EsqueceuSenha = () => {
         autoCapitalize='none'
       />
 
-      {/* <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Enviar e-mail</Text>
-      </TouchableOpacity> */}
-
-        <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
-                {loading ? (
-                    <ActivityIndicator size='small' color='#ffffff' /> // Mostra a animação de carregamento se estiver carregando
-                ) : (
-                    <Text style={styles.buttonText}>Enviar e-mail</Text>
-                )}
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size='small' color='#ffffff' />
+        ) : (
+          <Text style={styles.buttonText}>Enviar e-mail</Text>
+        )}
+      </TouchableOpacity>
 
       {message && <p>{message}</p>}
     </View>
@@ -114,7 +101,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
     paddingHorizontal: 10,
-    backgroundColor:'#f0f0f0',
+    backgroundColor: '#f0f0f0',
   },
 
   button: {

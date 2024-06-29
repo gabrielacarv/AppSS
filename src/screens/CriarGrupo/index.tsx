@@ -12,9 +12,8 @@ import NumberFormat from 'react-number-format';
 import { User } from '../../types/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserService from '../../services/userService';
-
-
-
+import InvitationService from '../../services/invitationService';
+import { Invitation } from '../../types/invitationType';
 
 const CriarGrupo = () => {
 
@@ -30,24 +29,40 @@ const CriarGrupo = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const [administratorID, setadministratorID] = useState('');
   const groupService = new GroupService();
+  const invitationService = new InvitationService();
+  const [grupos, setGrupos] = useState<Group[]>([]);
 
   const navigation = useNavigation<StackTypes>();
+  const BASE_URL = 'https://localhost:7186/api/Group/GetGroupsByUser/'
 
   useEffect(() => {
-    const fetchUserData = async () => {
-        try {
-            const userDataString = await AsyncStorage.getItem('userData');
-            if (userDataString !== null) {
-                const userData = JSON.parse(userDataString);
-                setUserData(userData);
-                console.log(userData)
+
+    const fetchGrupos = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem('userData');
+
+        if (userDataString !== null) {
+          const parsedUserData = JSON.parse(userDataString);
+          setUserData(parsedUserData);
+
+          if (parsedUserData.id) { // Verifica se id está definido
+            const response = await fetch(BASE_URL + parsedUserData.id);
+
+            if (!response.ok) {
+              throw new Error('Erro ao buscar grupos');
             }
-        } catch (error) {
-            console.error('Erro ao recuperar dados do usuário:', error);
+
+            const data = await response.json();
+            setGrupos(data);
+          }
         }
+      } catch (error) {
+        console.error('Erro ao buscar grupos:', error);
+      }
     };
-    fetchUserData();
-}, []);
+
+    fetchGrupos();
+  }, []);
 
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -71,7 +86,7 @@ const CriarGrupo = () => {
     }
   };
 
-  
+
   const handleDataChange = (text: string) => {
     setInputValue(text);
     const date = new Date(text);
@@ -80,36 +95,63 @@ const CriarGrupo = () => {
 
 
   const handleChange = (text: string) => {
-    setInputValue2(text); 
+    setInputValue2(text);
     const cleanedText = text.replace('R$', '').trim();
-    // const cleanedText = text.replace('R$', '').replace(',', '.').trim();
     const floatValue = parseFloat(cleanedText);
     setValor(floatValue);
-};
+  };
 
   const handleUpload = async () => {
     try {
+      if (!userData) {
+        throw new Error('Usuário não encontrado.');
+      }
+
       const group: Group = {
         name: name,
         maxPeople: parseInt(quant),
         disclosureDate: data,
         value: valor,
         description: descricao,
-        administrator: userData?.id ? userData?.id : 0,
+        administrator: userData.id ? userData.id : 0,
         icon: image,
       };
 
       const createGroup = await groupService.createGroup(group);
+
       if (createGroup) {
         console.log('Grupo adicionado com sucesso!');
-        navigation.navigate('Inicial');
+
+        const grupos = await groupService.getGroupsByUserAdmin(userData.id ? userData.id : 0);
+
+        console.log('Grupos retornados:', grupos);
+
+        if (grupos && grupos.length > 0) {
+          const lastGroup = grupos[grupos.length - 1];
+          console.log('Último grupo retornado:', lastGroup);
+
+          const invitation = {
+            groupId: lastGroup.idGroup ? lastGroup.idGroup : 0,
+            recipientId: userData.id ? userData.id : 0,
+            senderId: userData.id ? userData.id : 0,
+            status: 'aceito',
+          };
+
+          await invitationService.createInvitation(invitation);
+          console.log('Convite enviado com sucesso!');
+          navigation.navigate('Inicial');
+        } else {
+          console.error('Nenhum grupo encontrado para o usuário.');
+        }
       } else {
         console.log('Erro ao adicionar grupo');
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Erro ao adicionar grupo:', error);
     }
   };
+
+
 
   return (
     <View style={styles.container}>
@@ -118,7 +160,6 @@ const CriarGrupo = () => {
 
       <View style={styles.containerFormulario}>
 
-        {/* {image && <Image source={{ uri: image }} style={styles.imgPerfil} />} */}
         <Image source={image ? { uri: image } : require('../../../assets/images/Perfil_Grupo.png')} style={styles.imgPerfil} />
 
 
@@ -136,8 +177,8 @@ const CriarGrupo = () => {
           style={styles.input}
           placeholder='Máx. de participantes'
           inputMode='numeric'
-          onChangeText={text => setQuant(text)} // ParseInt adicionado aqui
-          value={quant} // Convertido para string
+          onChangeText={text => setQuant(text)}
+          value={quant}
         />
 
         <TextInputMask
@@ -150,14 +191,6 @@ const CriarGrupo = () => {
           onChangeText={handleDataChange}
           value={inputValue}
         />
-
-        {/* <TextInput
-          style={styles.input}
-          placeholder='Valor (R$)'
-          inputMode="numeric"
-          onChangeText={text => setValor(parseFloat(text))}
-          value={valor.toString()}
-        /> */}
 
         <TextInputMask
           style={styles.input}
@@ -172,39 +205,6 @@ const CriarGrupo = () => {
           onChangeText={handleChange}
           value={inputValue2}
         />
-
-
-        {/* <TextInputMask
-  style={styles.input}
-  placeholder='Valor (R$)'
-  type={'money'}
-  options={{
-    precision: 2,
-    separator: ',',
-    delimiter: '.',
-    unit: 'R$ ',
-  }}
-  value={inputValue2}
-  onChangeText={handleChange}
-/> */}
-
-
-        {/* <TextInputMask
-  style={styles.input}
-  placeholder='Valor (R$)'
-  type={'money'}
-  options={{
-    precision: 2,
-    separator: ',',
-    delimiter: '.',
-    unit: 'R$ ',
-  }}
-  value={inputValue2}
-  onChangeText={(formatted, inputValue2) => {
-    setInputValue2(formatted); // Atualiza o estado inputValue2 com o valor formatado
-    setValor(inputValue2 ? parseFloat(inputValue2) : 0); // Atualiza o estado valor com o valor sem formatação
-  }}
-/> */}
 
         <TextInput
           style={styles.input}

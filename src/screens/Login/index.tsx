@@ -46,14 +46,13 @@ const Login = () => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100} // Ajuste conforme necessário
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}
     >
       <View style={styles.container}>
 
         <Image source={require('../../../assets/images/LogoAmarela.png')} style={styles.imageLogo} />
         <Text style={styles.title}>Entrar</Text>
 
-        {/* <Text style={styles.labelText}>E-mail</Text> */}
         <TextInput
           style={[styles.input, usernameError && styles.errorInput]}
           placeholder='E-mail'
@@ -61,18 +60,9 @@ const Login = () => {
           value={login}
         />
 
-        {/* <Text style={styles.labelText}>Senha</Text> */}
-        {/* <TextInput
-        style={[styles.input, usernameError && styles.errorInput]}
-        placeholder='Senha'
-        secureTextEntry={true}
-        onChangeText={setPassword}
-        value={password}
-      /> */}
-
         <View style={styles.passwordContainer}>
           <TextInput
-            style={[ usernameError && styles.errorInput, { flex: 1 }]}
+            style={[usernameError && styles.errorInput, { flex: 1 }]}
             placeholder='Senha'
             secureTextEntry={!passwordVisible}
             onChangeText={setPassword}
@@ -93,7 +83,6 @@ const Login = () => {
         <TouchableOpacity
           style={styles.button}
           onPress={handleLogin}
-        // onPress={() => { navigation.navigate("Inicial"); }}
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
@@ -108,7 +97,6 @@ const Login = () => {
           <Text style={styles.buttonSec}>Esqueceu a senha?</Text>
         </TouchableOpacity>
 
-        {/* <Button title='Ir para Home'/> */}
       </View>
     </KeyboardAvoidingView>
 

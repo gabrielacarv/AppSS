@@ -91,7 +91,7 @@ const DetalhesGrupo = ({ route }: any) => {
         const fetchDrawResult = async () => {
             if (userData && grupo) {
                 try {
-                    const result = await drawService.getDrawResult(grupo.idGroup? grupo.idGroup : 0, userData.id? userData.id : 0);
+                    const result = await drawService.getDrawResult(grupo.idGroup ? grupo.idGroup : 0, userData.id ? userData.id : 0);
                     setDrawResult(result);
                 } catch (error) {
                     console.error('Erro ao buscar resultado do sorteio:', error);
@@ -103,15 +103,14 @@ const DetalhesGrupo = ({ route }: any) => {
             const userService = new UserService();
             const userData = await userService.getUserById(grupo?.administrator ? grupo?.administrator : 0);
             setUser(userData);
-          };
+        };
 
         fetchGrupo();
         fetchUserData();
         fetchParticipantes();
         fetchDrawResult();
         fetchUser();
-    // }, [route.params.grupoId, isFocused, navigation, userData, grupo]);
-    }, [route.params.grupoId, isFocused, navigation]);
+    }, [route.params.grupoId, isFocused, navigation, expanded]);
 
     const VerificaAdministrador = () => {
         if (userData?.id === grupo?.administrator) {
@@ -121,7 +120,7 @@ const DetalhesGrupo = ({ route }: any) => {
                 </TouchableOpacity>
             );
         } else {
-            return null; // Retorna null se a condição não for verdadeira
+            return null;
         }
     };
 
@@ -141,7 +140,7 @@ const DetalhesGrupo = ({ route }: any) => {
                 </View>
             );
         } else {
-            return null; // Retorna null se a condição não for verdadeira
+            return null;
         }
     };
 
@@ -159,82 +158,25 @@ const DetalhesGrupo = ({ route }: any) => {
         }
     };
 
-
-    // const handleAddParticipant = async () => {
-    //     // Verifique se o email do participante não está vazio
-    //     if (!newParticipantEmail.trim()) {
-    //         alert('Por favor, insira um email válido.');
-    //         return;
-    //     }
-
-    //     try {
-    //         // Verifique se o participante já está no grupo
-    //         // if (participante && participante.some(p => p.email === newParticipantEmail)) {
-    //         //     alert('Este participante já está no grupo.');
-    //         //     return;
-    //         // }
-
-    //         // // Verifique se o participante existe no banco de dados
-    //         // const participantExists = await groupService.checkParticipantExists(newParticipantEmail);
-
-    //         // if (!participantExists) {
-    //         //     alert('Este participante não existe.');
-    //         //     return;
-    //         // }
-
-    //         const rem : User =  userService.getUserByEmail(newParticipantEmail)
-    //         const id = rem.id ? rem.id : 0
-    //         setRemetenteId(id);
-
-    //         setgrupoId(grupo?.idGroup ? grupo?.idGroup : 0)
-
-    //         const invitation: Invitation = {
-    //             groupId: grupoId,
-    //             recipientId: remetenteId,
-    //             senderId: userData?.id ? userData.id : 0,
-    //             status: 'Aceito',
-    //           };
-
-    //         // // Adicione o participante ao grupo
-    //         invitationService.createInvitation(invitation);
-
-    //         // Atualize a lista de participantes
-    //         const updatedParticipants = await groupService.GetParticipantsByGroup(route.params.grupoId);
-    //         setparticipante(updatedParticipants);
-
-    //         // Limpe o campo de email do participante
-    //         setNewParticipantEmail('');
-    //     } catch (error) {
-    //         console.error('Erro ao adicionar participante:', error);
-    //         alert('Erro ao adicionar participante. Tente novamente mais tarde.');
-    //     }
-    // };
-
     const handleAddParticipant = async () => {
-        // Verifique se o email do participante não está vazio
         if (!newParticipantEmail.trim()) {
             alert('Por favor, insira um email válido.');
             return;
         }
 
         try {
-            // Obtenha o usuário pelo email
             const rem: User = await userService.getUserByEmail(newParticipantEmail);
 
-            // Verifique se o usuário foi encontrado
             if (!rem) {
                 alert('Usuário não encontrado.');
                 return;
             }
 
-            // Extraia o ID do usuário
             const RecipientId = rem.id ? rem.id : 0;
 
-            // Defina o ID do remetente e o ID do grupo
-            
+
             setgrupoId(grupo?.idGroup ? grupo?.idGroup : 0);
 
-            // Crie um objeto de convite
             const invitation: Invitation = {
                 groupId: grupoId,
                 recipientId: RecipientId,
@@ -242,14 +184,11 @@ const DetalhesGrupo = ({ route }: any) => {
                 status: 'Pendente',
             };
 
-            // Envie o convite para o serviço
             invitationService.createInvitation(invitation);
 
-            // Atualize a lista de participantes
             const updatedParticipants = await groupService.GetParticipantsByGroup(route.params.grupoId);
             setparticipante(updatedParticipants);
 
-            // Limpe o campo de email do participante
             setNewParticipantEmail('');
         } catch (error) {
             console.error('Erro ao adicionar participante:', error);
@@ -275,22 +214,22 @@ const DetalhesGrupo = ({ route }: any) => {
 
     const handleLeaveGroup = async () => {
         try {
-          if (!userData || !userData.id) {
-            throw new Error('ID do usuário não encontrado.');
-          }
-    
-          const success = await groupService.leaveGroup(grupoId, userData.id);
-          if (success) {
-            alert('Você saiu do grupo com sucesso.');
-            navigation.navigate('Inicial');
-          } else {
-            alert('Erro ao sair do grupo.');
-          }
+            if (!userData || !userData.id) {
+                throw new Error('ID do usuário não encontrado.');
+            }
+
+            const success = await groupService.leaveGroup(grupoId, userData.id);
+            if (success) {
+                alert('Você saiu do grupo com sucesso.');
+                navigation.navigate('Inicial');
+            } else {
+                alert('Erro ao sair do grupo.');
+            }
         } catch (error) {
-          console.error('Erro ao sair do grupo:', error);
-          alert('Erro ao sair do grupo. Tente novamente mais tarde.');
+            console.error('Erro ao sair do grupo:', error);
+            alert('Erro ao sair do grupo. Tente novamente mais tarde.');
         }
-      };
+    };
 
     return (
         <View style={styles.container}>
@@ -311,7 +250,6 @@ const DetalhesGrupo = ({ route }: any) => {
                                     <View style={[styles.infoPrincipalGrupo, expanded && styles.expandedInfoPrincipalGrupo]} >
                                         <Image source={grupo.icon ? { uri: `data:image/jpeg;base64,${grupo.icon}` } : require('../../../assets/images/Perfil_Grupo.png')} style={[styles.icon, expanded && styles.expandedIcon]} />
                                         <Text style={styles.text}>{grupo.name}</Text>
-                                        {/* <Text style={styles.text}>{`0/${grupo.maxPeople}`}</Text> */}
                                         <VerificaAdministrador />
                                         {expanded && (
                                             <>
@@ -346,24 +284,24 @@ const DetalhesGrupo = ({ route }: any) => {
                                 </ScrollView>
 
                                 <View style={styles.container1}>
-                            <TouchableOpacity style={styles.containerResultado}>
-                                <View style={styles.infoResultado} >
-                                    <Text style={styles.titleResultado}>Resultado</Text>
-                                    <Text style={styles.text}>{drawResult ? `Você tirou: ${drawResult}` : 'Sorteio não realizado!'}</Text>
+                                    <TouchableOpacity style={styles.containerResultado}>
+                                        <View style={styles.infoResultado} >
+                                            <Text style={styles.titleResultado}>Resultado</Text>
+                                            <Text style={styles.text}>{drawResult ? `Você tirou: ${drawResult}` : 'Sorteio não realizado!'}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    <VerificaAdministrador3 />
+
+                                    <TouchableOpacity style={styles.btnSairDoGrupo} onPress={handleLeaveGroup}>
+                                        <Text style={styles.textBtnSairDoGrupo}>Sair do Grupo</Text>
+                                    </TouchableOpacity>
                                 </View>
-                            </TouchableOpacity>
-
-                            <VerificaAdministrador3 />
-
-                            <TouchableOpacity style={styles.btnSairDoGrupo} onPress={handleLeaveGroup}>
-                                <Text style={styles.textBtnSairDoGrupo}>Sair do Grupo</Text>
-                            </TouchableOpacity>
-                        </View>
                             </View>
 
-                            
+
                         )}
-                        
+
                     </ScrollView>
                 </>
             ) : (
@@ -380,7 +318,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
 
-    containerCarregamento:{
+    containerCarregamento: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -416,7 +354,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#98A62D',
         minWidth: '90%',
         maxHeight: '80%',
-        // alignItems: 'center',
         padding: 20,
         borderRadius: 10,
         marginBottom: 10,
@@ -425,8 +362,6 @@ const styles = StyleSheet.create({
     containerGrupo: {
         width: '90%',
         height: 70,
-        // paddingRight: 30,
-        // paddingLeft: 30,
         justifyContent: 'space-around',
         alignItems: 'center',
         backgroundColor: '#98A62D',
@@ -485,7 +420,6 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         borderColor: '#a1e000',
         borderRadius: 10,
-        // padding: 10,
     },
 
     expandedIcon: {
@@ -526,7 +460,6 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontFamily: 'Poppins_400Regular',
         textAlign: 'justify',
-        // backgroundColor: '#f0f0f0',
         borderRadius: 10,
         padding: 5,
         borderColor: '#f0f0f0',
@@ -562,7 +495,6 @@ const styles = StyleSheet.create({
     btnEditarGrupo: {
         width: '30%',
         height: 20,
-        // backgroundColor: '#F2441D',
         backgroundColor: '#F29422',
         borderRadius: 10,
         justifyContent: 'center',

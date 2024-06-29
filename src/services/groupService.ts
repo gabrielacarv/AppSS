@@ -10,7 +10,6 @@ const BASE_URL = 'https://localhost:7186/api/Group/'
 class GroupService {
 
   constructor() {
-    // Se necessário, adicione inicializações aqui
   }
 
   async createGroup(group: Group): Promise<boolean> {
@@ -95,13 +94,6 @@ async updateGroup(group: Group): Promise<boolean> {
     formData.append('disclosureDate', da.toDateString());
     formData.append('maxPeople', group.maxPeople.toString());
     
-
-    // if (group.icon) {
-    //   const responsePhoto = await fetch(group.icon);
-    //   const blob = await responsePhoto.blob();
-    //   formData.append('photo', blob, 'photo.*');
-    // }
-
     const editResponse = await axios.put(BASE_URL + `UpdateGroup/${group.idGroup}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -154,6 +146,16 @@ async leaveGroup(groupId: number, participantId: number): Promise<boolean> {
   } catch (error) {
     console.error('Erro ao sair do grupo:', error);
     return false;
+  }
+}
+
+async getGroupsByUserAdmin(userId: number): Promise<Group[] | null> {
+  try {
+    const response: AxiosResponse<Group[]> = await axios.get(BASE_URL + `GetGroupsByUserAdmin/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar grupos pelo usuário:', error);
+    return null;
   }
 }
   

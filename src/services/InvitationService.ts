@@ -7,7 +7,6 @@ const BASE_URL = 'https://localhost:7186/api/Invitation/'
 class InvitationService {
 
   constructor() {
-    // Se necessário, adicione inicializações aqui
   }
 
   async createInvitation(invitation: Invitation): Promise<boolean> {
@@ -24,7 +23,6 @@ class InvitationService {
         },
       });
 
-      // Verifica o código de status da resposta
       if (uploadResponse.status === 201) {
         alert('Convite criado com sucesso!');
         return true;
